@@ -4,14 +4,13 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
+import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 import { Category } from '@/types';
-import { CheckCircle, XCircle } from 'lucide-react';
 
 // Zod validation schema: validates name is required and short_description is optional
 const categorySchema = z.object({
@@ -124,16 +123,7 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
 
                         {/* Action Buttons */}
                         <DialogFooter>
-                            <DialogClose asChild>
-                                <Button type="button" variant="outline">
-                                    <XCircle />
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                            <Button type="submit" disabled={form.formState.isSubmitting}>
-                                <CheckCircle />
-                                Save
-                            </Button>
+                            <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
                         </DialogFooter>
                     </form>
                 </Form>
