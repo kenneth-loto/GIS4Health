@@ -10,7 +10,8 @@ class CategoryController extends Controller
 {
     public function list()
     {
-        return Category::orderBy('name')->get(['id', 'name']);
+        $categories = Category::select('id', 'name')->orderBy('name')->get();
+        return response()->json($categories);
     }
 
     // 🔹 Paginated, searchable list for index table
