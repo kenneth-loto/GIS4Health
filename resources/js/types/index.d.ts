@@ -2,6 +2,7 @@ import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
 export * from '@/types/category';
+export * from '@/types/disease';
 
 export interface Auth {
     user: User;

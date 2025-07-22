@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function list()
     {
         $categories = Category::orderBy('name')->get();
-        return CategoryOptionResource::collection($categories); // or use resolve
+        return CategoryOptionResource::collection($categories)->resolve(); // or use resolve
     }
 
     // 🔹 Paginated, searchable list for index table

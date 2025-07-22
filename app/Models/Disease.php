@@ -6,18 +6,19 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Disease extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
+    /** @use HasFactory<\Database\Factories\DiseaseFactory> */
     use HasFactory, HasUuids;
 
-    protected $fillable = [
+    public $fillable = [
         'name',
-        'short_description'
+        'short_description',
+        'category_id'
     ];
 
-    public function disease()
+    public function category()
     {
-        return $this->hasMany(Disease::class);
+        return $this->belongsTo(Category::class);
     }
 }
