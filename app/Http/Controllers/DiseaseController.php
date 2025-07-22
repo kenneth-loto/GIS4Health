@@ -31,7 +31,7 @@ class DiseaseController extends Controller
     public function store(StoreDiseaseRequest $request)
     {
         Disease::create($request->validated());
-        return redirect()->route('diseases.index')->with('success', 'Disease created successfully');
+        return redirect()->route('diseases.index')->with('success', 'Disease added successfully');
     }
 
     /**

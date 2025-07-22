@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateDiseaseRequest extends FormRequest
+class UpdateSeverityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,8 +29,6 @@ class UpdateDiseaseRequest extends FormRequest
                 'max:255',
                 Rule::unique('severities', 'name')->ignore($this->route('category')),
             ],
-            'short_description' => 'nullable|string|max:255',
-            'category_id' => 'required|exists:categories,id',
         ];
     }
 }

@@ -3,6 +3,7 @@ import type { Config } from 'ziggy-js';
 
 export * from '@/types/category';
 export * from '@/types/disease';
+export * from '@/types/severity';
 
 export interface Auth {
     user: User;
