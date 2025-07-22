@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
+use App\Http\Controllers\Api\MunicipalityController;
 use App\Http\Controllers\Api\SeverityController;
 use App\Http\Controllers\Api\SuffixController;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ Route::get('/severities/list', [SeverityController::class, 'list']);
 // Suffix Route
 Route::get('/suffixes', [SuffixController::class, 'index']);
 Route::get('/suffixes/list', [SuffixController::class, 'list']);
+
+// Municipality Route
+Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
