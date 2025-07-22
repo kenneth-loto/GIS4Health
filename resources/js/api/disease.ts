@@ -17,11 +17,16 @@ export interface DiseaseDataResponse {
 // For simple list fetch (no pagination, no search)
 export async function fetchDiseasesOption(): Promise<Disease[]> {
     const res = await axios.get('/api/diseases/list');
-    return res.data;
+    return res.data.data;
 }
 
 // For dynamic list fetch (with pagination, search)
 export async function fetchDiseasesTableData(params: DiseaseDataParams = { page: 1, per_page: 5 }): Promise<DiseaseDataResponse> {
     const res = await axios.get('/api/diseases', { params });
-    return res.data;
+    return {
+        data: res.data.data,
+        current_page: res.data.meta.current_page,
+        last_page: res.data.meta.last_page,
+        total: res.data.meta.total,
+    };
 }

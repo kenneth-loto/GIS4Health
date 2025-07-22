@@ -32,7 +32,7 @@ function getNestedValue(obj: any, accessor: string): any {
 export function CustomTable<T extends { id: number | string }>({ columns, fetchFn, onEdit, onDelete }: Props<T>) {
     const [state, dispatch] = useTableReducer<T>();
     const debouncedSearch = useDebounce(state.search, 500);
-    const totalPages = Math.max(Math.ceil(state.total / state.perPage), 1);
+    const totalPages = Number.isFinite(state.total) && state.perPage > 0 ? Math.max(Math.ceil(state.total / state.perPage), 1) : 1;
 
     const loadData = () => {
         dispatch({ type: 'SET_LOADING', payload: true });
@@ -180,7 +180,8 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
 
             <div className="flex flex-col items-center justify-between gap-4 pt-2 lg:flex-row">
                 <p className="text-sm text-muted-foreground">
-                    Page {state.page} of {totalPages} — Total {state.total} item{state.total !== 1 && 's'}
+                    Page {isNaN(state.page) ? 1 : state.page} of {isNaN(totalPages) ? 1 : totalPages} — Total {state.total ?? 0} item
+                    {state.total === 1 ? '' : 's'}
                 </p>
                 <div className="flex flex-wrap items-center gap-1">
                     <Pagination>

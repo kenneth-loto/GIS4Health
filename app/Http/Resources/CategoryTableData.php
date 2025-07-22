@@ -18,6 +18,7 @@ class CategoryTableData extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'short_description' => $this->short_description,
+            'disease_count' => $this->disease_count,
         ];
     }
 }

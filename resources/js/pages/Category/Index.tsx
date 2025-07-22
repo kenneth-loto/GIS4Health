@@ -46,6 +46,7 @@ export default function Index() {
                     columns={[
                         { label: 'Name', accessor: 'name' },
                         { label: 'Short Description', accessor: 'short_description' },
+                        { label: 'Diseases Count', accessor: 'disease_count' },
                     ]}
                     fetchFn={fetchCategoriesTableData}
                     onEdit={openEdit}
