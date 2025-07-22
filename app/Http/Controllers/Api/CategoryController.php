@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryOptionResource;
+use App\Http\Resources\CategoryTableData;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -10,8 +12,8 @@ class CategoryController extends Controller
 {
     public function list()
     {
-        $categories = Category::select('id', 'name')->orderBy('name')->get();
-        return response()->json($categories);
+        $categories = Category::orderBy('name')->get();
+        return CategoryOptionResource::collection($categories); // or use resolve
     }
 
     // 🔹 Paginated, searchable list for index table
@@ -27,14 +29,11 @@ class CategoryController extends Controller
             });
         }
 
-        if ($request->wantsJson() || $request->expectsJson()) {
-            return response()->json(
-                $query->orderBy('name')
-                    ->paginate($request->input('per_page', 5))
-                    ->appends($request->only(['search', 'per_page']))
-            );
-        }
+        // Paginate and use resource collection
+        $categories = $query->orderBy('name')
+            ->paginate($request->input('per_page', 5))
+            ->appends($request->only(['search', 'per_page']));
 
-        abort(400, 'Invalid request');
+        return CategoryTableData::collection($categories);
     }
 }
