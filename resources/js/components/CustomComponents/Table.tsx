@@ -150,21 +150,23 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                                     const value = getNestedValue(row, col.accessor);
                                     return (
                                         <TableCell key={col.label + index}>
-                                            <span className={value == null ? 'text-gray-400 italic' : ''}>{value ?? 'N/A'}</span>
+                                            <span className={(value == null ? 'text-gray-400 italic' : '') + ' block break-words whitespace-normal'}>
+                                                {value ?? 'N/A'}
+                                            </span>
                                         </TableCell>
                                     );
                                 })}
                                 {(onEdit || onDelete) && (
                                     <TableCell>
-                                        <div className="flex gap-2">
+                                        <div className="flex w-full flex-col gap-2 lg:flex-row">
                                             {onEdit && (
-                                                <Button variant="outline" onClick={() => onEdit(row)}>
+                                                <Button variant="outline" className="w-full sm:w-auto" onClick={() => onEdit(row)}>
                                                     <Edit className="mr-1 h-4 w-4" />
                                                     Edit
                                                 </Button>
                                             )}
                                             {onDelete && (
-                                                <Button variant="destructive" onClick={() => onDelete(row)}>
+                                                <Button variant="destructive" className="w-full sm:w-auto" onClick={() => onDelete(row)}>
                                                     <Trash2 className="mr-1 h-4 w-4" />
                                                     Delete
                                                 </Button>
