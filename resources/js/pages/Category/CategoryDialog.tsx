@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 import { Category } from '@/types';
+import { setServerErrors } from '@/utils/set-server-errors';
 
 // Zod validation schema: validates name is required and short_description is optional
 const categorySchema = z.object({
@@ -60,12 +61,7 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
 
         // Callback for server-side validation errors
         const onError = (errors: Record<string, string>) => {
-            Object.entries(errors).forEach(([field, message]) => {
-                form.setError(field as keyof CategoryFormValues, {
-                    type: 'server',
-                    message,
-                });
-            });
+            setServerErrors(form, errors);
         };
 
         // Perform Inertia form request depending on whether we are editing or adding
