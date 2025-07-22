@@ -30,6 +30,7 @@ Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
 
 // Barangay Route
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
+Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::class, 'barangayGeom']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

@@ -5,3 +5,8 @@ export async function fetchBarangaysByMunicipality(municipalityId: string): Prom
     const res = await axios.get(`/api/barangays/by-municipality/${municipalityId}`);
     return res.data.data;
 }
+
+export async function fetchBarangayGeom(barangayId: string) {
+    const res = await axios.get(`/api/barangay-geometries/${barangayId}`);
+    return res.data;
+}

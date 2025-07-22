@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BarangayGeomResource;
 use App\Http\Resources\BarangayOptionResource;
 use App\Models\Barangay;
 use Illuminate\Http\Request;
@@ -14,5 +15,14 @@ class BarangayController extends Controller
         $barangays = Barangay::where('municipality_id', $municipalityId)->orderBy('name')->get();
         return BarangayOptionResource::collection($barangays); // or use resolve
 
+    }
+
+    public function barangayGeom($barangayId)
+    {
+        $barangay = Barangay::selectRaw('id, name, ST_AsGeoJSON(geom) as geom')
+            ->where('id', $barangayId)
+            ->firstOrFail();
+
+        return new BarangayGeomResource($barangay);
     }
 }
