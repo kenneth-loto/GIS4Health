@@ -18,3 +18,4 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/category.php';
 require __DIR__ . '/disease.php';
 require __DIR__ . '/severity.php';
+require __DIR__ . '/suffix.php';

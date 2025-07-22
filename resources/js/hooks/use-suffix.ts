@@ -1,10 +1,10 @@
-import { fetchSeveritiesOption, fetchSeveritiesTableData } from '@/api/severity';
-import type { Severity } from '@/types';
+import { fetchSuffixesOption, fetchSuffixesTableData } from '@/api/suffix';
+import type { Suffix } from '@/types';
 import { useEffect, useState } from 'react';
 
 // 🔹 Simple list fetch (used in dialogs)
 export function useSeveritiesOption(dialogOpen: boolean = true) {
-    const [severities, setSeverities] = useState<Severity[]>([]);
+    const [suffixes, setSuffixes] = useState<Suffix[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -12,24 +12,24 @@ export function useSeveritiesOption(dialogOpen: boolean = true) {
 
         setLoading(true);
 
-        fetchSeveritiesOption()
+        fetchSuffixesOption()
             .then((res) => {
-                setSeverities(res);
+                setSuffixes(res);
             })
             .catch(() => {
-                setSeverities([]);
+                setSuffixes([]);
             })
             .finally(() => {
                 setLoading(false);
             });
     }, [dialogOpen]);
 
-    return { severities, loading };
+    return { suffixes, loading };
 }
 
 // 🔹 Dynamic list fetch (used in index with pagination + search)
 export function useSeveritiesTableData(search: string = '', page: number = 1, per_page: number = 5) {
-    const [data, setData] = useState<Severity[]>([]);
+    const [data, setData] = useState<Suffix[]>([]);
     const [total, setTotal] = useState(0);
     const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ export function useSeveritiesTableData(search: string = '', page: number = 1, pe
     useEffect(() => {
         setLoading(true);
 
-        fetchSeveritiesTableData({ search, page, per_page })
+        fetchSuffixesTableData({ search, page, per_page })
             .then((res) => {
                 setData(res.data);
                 setTotal(res.total);
@@ -54,7 +54,7 @@ export function useSeveritiesTableData(search: string = '', page: number = 1, pe
     }, [search, page, per_page]);
 
     return {
-        severities: data,
+        suffixes: data,
         total,
         lastPage,
         loading,

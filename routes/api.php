@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
 use App\Http\Controllers\Api\SeverityController;
+use App\Http\Controllers\Api\SuffixController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,10 @@ Route::get('/diseases', [DiseaseController::class, 'index']);
 // Severity Route
 Route::get('/severities', [SeverityController::class, 'index']);
 Route::get('/severities/list', [SeverityController::class, 'list']);
+
+// Suffix Route
+Route::get('/suffixes', [SuffixController::class, 'index']);
+Route::get('/suffixes/list', [SuffixController::class, 'list']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

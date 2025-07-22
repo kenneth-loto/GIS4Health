@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryOptionResource;
-use App\Http\Resources\CategoryTableData;
+use App\Http\Resources\CategoryTableDataResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -34,6 +34,6 @@ class CategoryController extends Controller
             ->paginate($request->input('per_page', 5))
             ->appends($request->only(['search', 'per_page']));
 
-        return CategoryTableData::collection($categories);
+        return CategoryTableDataResource::collection($categories);
     }
 }

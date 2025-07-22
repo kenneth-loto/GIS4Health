@@ -9,25 +9,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
-import { Severity } from '@/types';
+import { Suffix } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
-const severitySchema = z.object({
+const suffixSchema = z.object({
     name: z.string().min(1, 'Name is required'),
 });
 
-type SeverityFormValues = z.infer<typeof severitySchema>;
+type SuffixFormValues = z.infer<typeof suffixSchema>;
 
 type Props = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    severity: Severity | null;
+    suffix: Suffix | null;
     isEditing: boolean;
 };
 
-export default function SeverityDialog({ open, onOpenChange, severity, isEditing }: Props) {
-    const form = useForm<SeverityFormValues>({
-        resolver: zodResolver(severitySchema),
+export default function SuffixDialog({ open, onOpenChange, suffix, isEditing }: Props) {
+    const form = useForm<SuffixFormValues>({
+        resolver: zodResolver(suffixSchema),
         defaultValues: {
             name: '',
         },
@@ -36,13 +36,13 @@ export default function SeverityDialog({ open, onOpenChange, severity, isEditing
     useEffect(() => {
         if (open) {
             form.reset({
-                name: severity?.name || '',
+                name: suffix?.name || '',
             });
             form.clearErrors();
         }
-    }, [open, severity]);
+    }, [open, suffix]);
 
-    const onSubmit = (values: SeverityFormValues) => {
+    const onSubmit = (values: SuffixFormValues) => {
         const onSuccess = () => {
             onOpenChange(false);
             form.reset();
@@ -52,10 +52,10 @@ export default function SeverityDialog({ open, onOpenChange, severity, isEditing
             setServerErrors(form, errors);
         };
 
-        if (isEditing && severity) {
-            router.put(`/severities/${severity.id}`, values, { onSuccess, onError });
+        if (isEditing && suffix) {
+            router.put(`/suffixes/${suffix.id}`, values, { onSuccess, onError });
         } else {
-            router.post('/severities', values, { onSuccess, onError });
+            router.post('/suffixes', values, { onSuccess, onError });
         }
     };
 
@@ -63,8 +63,8 @@ export default function SeverityDialog({ open, onOpenChange, severity, isEditing
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>{isEditing ? 'Edit Severity' : 'Add Severity'}</DialogTitle>
-                    <DialogDescription>{isEditing ? 'Update the severity details below.' : 'Enter details for the new severity.'}</DialogDescription>
+                    <DialogTitle>{isEditing ? 'Edit Suffix' : 'Add Suffix'}</DialogTitle>
+                    <DialogDescription>{isEditing ? 'Update the suffix details below.' : 'Enter details for the new suffix.'}</DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -76,7 +76,7 @@ export default function SeverityDialog({ open, onOpenChange, severity, isEditing
                                 <FormItem>
                                     <FormLabel>Name</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="e.g. Mild" autoFocus {...field} />
+                                        <Input placeholder="e.g. Jr." autoFocus {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DiseaseOptionResource;
-use App\Http\Resources\DiseaseTableData;
+use App\Http\Resources\DiseaseTableDataResource;
 use App\Models\Disease;
 use Illuminate\Http\Request;
 
@@ -35,6 +35,6 @@ class DiseaseController extends Controller
             ->paginate($request->input('per_page', 5))
             ->appends($request->only(['search', 'per_page']));
 
-        return DiseaseTableData::collection($diseases);
+        return DiseaseTableDataResource::collection($diseases);
     }
 }

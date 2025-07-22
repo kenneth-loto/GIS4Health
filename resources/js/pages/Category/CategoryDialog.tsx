@@ -13,25 +13,21 @@ import DialogActionButtons from '@/components/CustomComponents/DialogActionButto
 import { Category } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
-// Zod validation schema: validates name is required and short_description is optional
 const categorySchema = z.object({
     name: z.string().min(1, 'Name is required'),
     short_description: z.string().optional(),
 });
 
-// Type inferred from schema for form values
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
-// Props expected by the dialog
 type Props = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    category: Category | null; // If null, this is an "Add" form
+    category: Category | null;
     isEditing: boolean;
 };
 
 export default function CategoryDialog({ open, onOpenChange, category, isEditing }: Props) {
-    // Initialize the form using React Hook Form with Zod validation
     const form = useForm<CategoryFormValues>({
         resolver: zodResolver(categorySchema),
         defaultValues: {
@@ -40,31 +36,26 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
         },
     });
 
-    // Reset form values and errors when dialog opens or category changes
     useEffect(() => {
         if (open) {
             form.reset({
                 name: category?.name || '',
                 short_description: category?.short_description || '',
             });
-            form.clearErrors(); // Clears server-side or client-side validation errors
+            form.clearErrors();
         }
     }, [open, category]);
 
-    // Submit handler: either create or update the category
     const onSubmit = (values: CategoryFormValues) => {
-        // Callback for success response
         const onSuccess = () => {
-            onOpenChange(false); // Close the dialog
-            form.reset(); // Reset form values
+            onOpenChange(false);
+            form.reset();
         };
 
-        // Callback for server-side validation errors
         const onError = (errors: Record<string, string>) => {
             setServerErrors(form, errors);
         };
 
-        // Perform Inertia form request depending on whether we are editing or adding
         if (isEditing && category) {
             router.put(`/categories/${category.id}`, values, { onSuccess, onError });
         } else {
@@ -80,10 +71,8 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
                     <DialogDescription>{isEditing ? 'Update the category details below.' : 'Enter details for the new category.'}</DialogDescription>
                 </DialogHeader>
 
-                {/* Form wrapper from shadcn */}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-                        {/* Name Field */}
                         <FormField
                             control={form.control}
                             name="name"
@@ -98,7 +87,6 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
                             )}
                         />
 
-                        {/* Category Short Description Field */}
                         <FormField
                             control={form.control}
                             name="short_description"
@@ -117,7 +105,6 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
                             )}
                         />
 
-                        {/* Action Buttons */}
                         <DialogFooter>
                             <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
                         </DialogFooter>

@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SeverityOptionResource;
-use App\Http\Resources\SeverityTableDataResource;
-use App\Models\Severity;
+use App\Http\Resources\SuffixOptionResource;
+use App\Http\Resources\SuffixTableDataResource;
+use App\Models\Suffix;
 use Illuminate\Http\Request;
 
-class SeverityController extends Controller
+class SuffixController extends Controller
 {
     public function list()
     {
-        $severities = Severity::orderBy('name')->get();
-        return SeverityOptionResource::collection($severities); // or use resolve
+        $suffixes = Suffix::orderBy('name')->get();
+        return SuffixOptionResource::collection($suffixes); // or use resolve
     }
 
     // 🔹 Paginated, searchable list for index table
     public function index(Request $request)
     {
-        $query = Severity::query();
+        $query = Suffix::query();
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -29,10 +29,10 @@ class SeverityController extends Controller
         }
 
         // Paginate and use resource collection
-        $severities = $query->orderBy('name')
+        $suffixes = $query->orderBy('name')
             ->paginate($request->input('per_page', 5))
             ->appends($request->only(['search', 'per_page']));
 
-        return SeverityTableDataResource::collection($severities);
+        return SuffixTableDataResource::collection($suffixes);
     }
 }

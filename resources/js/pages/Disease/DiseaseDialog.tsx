@@ -18,13 +18,13 @@ import { useCategoriesOption } from '@/hooks/use-category';
 import { Disease } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
-const categorySchema = z.object({
+const diseaseSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     short_description: z.string().optional(),
     category_id: z.string().min(1, 'Category is required'),
 });
 
-type DiseaseFormValues = z.infer<typeof categorySchema>;
+type DiseaseFormValues = z.infer<typeof diseaseSchema>;
 
 type Props = {
     open: boolean;
@@ -34,9 +34,9 @@ type Props = {
     modal: boolean;
 };
 
-export default function CategoryDialog({ open, onOpenChange, disease, isEditing, modal = true }: Props) {
+export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, modal = true }: Props) {
     const form = useForm<DiseaseFormValues>({
-        resolver: zodResolver(categorySchema),
+        resolver: zodResolver(diseaseSchema),
         defaultValues: {
             name: '',
             short_description: '',
@@ -84,7 +84,6 @@ export default function CategoryDialog({ open, onOpenChange, disease, isEditing,
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-                        {/* Name Field */}
                         <FormField
                             control={form.control}
                             name="name"
@@ -99,7 +98,6 @@ export default function CategoryDialog({ open, onOpenChange, disease, isEditing,
                             )}
                         />
 
-                        {/* Short Description */}
                         <FormField
                             control={form.control}
                             name="short_description"
@@ -118,7 +116,6 @@ export default function CategoryDialog({ open, onOpenChange, disease, isEditing,
                             )}
                         />
 
-                        {/* Category Combobox */}
                         <FormField
                             control={form.control}
                             name="category_id"
@@ -141,7 +138,6 @@ export default function CategoryDialog({ open, onOpenChange, disease, isEditing,
                             )}
                         />
 
-                        {/* Buttons */}
                         <DialogFooter>
                             <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
                         </DialogFooter>

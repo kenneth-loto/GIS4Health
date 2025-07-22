@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryTableData extends JsonResource
+class SuffixOptionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,6 @@ class CategoryTableData extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'short_description' => $this->short_description,
-            'disease_count' => $this->disease_count,
         ];
     }
 }

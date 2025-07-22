@@ -1,20 +1,20 @@
-import { fetchSeveritiesTableData } from '@/api/severity';
+import { fetchSuffixesTableData } from '@/api/suffix';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
 import { useCrudDialog } from '@/hooks/use-crud-dialog';
 import useToast from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
-import SeverityDialog from '@/pages/Severity/SeverityDialog';
-import { Severity, type BreadcrumbItem } from '@/types';
+import SuffixDialog from '@/pages/Suffix/SuffixDialog';
+import { Suffix, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Severities', href: '/severities' }];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Suffixes', href: '/suffix' }];
 
 export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Severity>();
+        useCrudDialog<Suffix>();
 
     useToast();
 
@@ -25,7 +25,7 @@ export default function Index() {
     const confirmDelete = () => {
         if (!data) return;
         setDeleting(true);
-        router.delete(`/severities/${data.id}`, {
+        router.delete(`/suffixes/${data.id}`, {
             onFinish: () => {
                 setDeleting(false);
                 closeDelete();
@@ -35,7 +35,7 @@ export default function Index() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Severities" />
+            <Head title="Suffixes" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex justify-end">
                     <Button onClick={openAdd}>Add</Button>
@@ -44,12 +44,12 @@ export default function Index() {
                 <CustomTable
                     key={tableKey}
                     columns={[{ label: 'Name', accessor: 'name' }]}
-                    fetchFn={fetchSeveritiesTableData}
+                    fetchFn={fetchSuffixesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
 
-                <SeverityDialog open={isOpen} onOpenChange={closeForm} severity={data} isEditing={mode === 'edit'} />
+                <SuffixDialog open={isOpen} onOpenChange={closeForm} suffix={data} isEditing={mode === 'edit'} />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>
