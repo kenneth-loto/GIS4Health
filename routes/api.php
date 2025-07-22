@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
 use App\Http\Controllers\Api\MunicipalityController;
@@ -26,6 +27,9 @@ Route::get('/suffixes/list', [SuffixController::class, 'list']);
 
 // Municipality Route
 Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
+
+// Barangay Route
+Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

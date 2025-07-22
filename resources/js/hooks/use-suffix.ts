@@ -3,7 +3,7 @@ import type { Suffix } from '@/types';
 import { useEffect, useState } from 'react';
 
 // 🔹 Simple list fetch (used in dialogs)
-export function useSeveritiesOption(dialogOpen: boolean = true) {
+export function useSuffixesOption(dialogOpen: boolean = true) {
     const [suffixes, setSuffixes] = useState<Suffix[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export function useSeveritiesOption(dialogOpen: boolean = true) {
 }
 
 // 🔹 Dynamic list fetch (used in index with pagination + search)
-export function useSeveritiesTableData(search: string = '', page: number = 1, per_page: number = 5) {
+export function useSuffixesTableData(search: string = '', page: number = 1, per_page: number = 5) {
     const [data, setData] = useState<Suffix[]>([]);
     const [total, setTotal] = useState(0);
     const [lastPage, setLastPage] = useState(1);
