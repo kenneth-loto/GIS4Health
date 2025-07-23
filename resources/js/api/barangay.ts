@@ -7,6 +7,6 @@ export async function fetchBarangaysByMunicipality(municipalityId: string): Prom
 }
 
 export async function fetchBarangayGeom(barangayId: string) {
-    const res = await axios.get(`/api/barangay-geometries/${barangayId}`);
-    return res.data;
+    const res = await axios.get(`/api/barangays/barangay-geometries/${barangayId}`);
+    return res.data.data.geom;
 }
