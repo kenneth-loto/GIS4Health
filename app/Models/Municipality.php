@@ -18,4 +18,9 @@ class Municipality extends Model
     {
         return $this->hasMany(Barangay::class);
     }
+
+    public function patient_info()
+    {
+        return $this->hasMany(PatientInfo::class);
+    }
 }
