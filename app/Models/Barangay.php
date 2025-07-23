@@ -19,4 +19,9 @@ class Barangay extends Model
     {
         return $this->belongsTo(Municipality::class);
     }
+
+    public function patient_info()
+    {
+        return $this->hasMany(PatientInfo::class);
+    }
 }
