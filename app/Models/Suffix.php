@@ -14,4 +14,10 @@ class Suffix extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function patient_info()
+    {
+        return $this->hasMany(PatientInfo::class);
+    }
 }
+
