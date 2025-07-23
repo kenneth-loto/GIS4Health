@@ -17,7 +17,7 @@ class BarangayGeomResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'geom' => json_decode($this->geom),
+            'geom' => json_decode($this->geom, true),
         ];
     }
 }
