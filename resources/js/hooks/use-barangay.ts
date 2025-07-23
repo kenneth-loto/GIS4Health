@@ -1,25 +1,19 @@
 import { fetchBarangayGeom, fetchBarangaysByMunicipality } from '@/api/barangay';
 import type { Barangay } from '@/types';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 export function useBarangayOptions(municipalityId: string) {
-    const [barangays, setBarangays] = useState<Barangay[]>([]);
-    const [loading, setLoading] = useState(false);
+    const shouldFetch = Boolean(municipalityId);
+    const { data, error, isLoading } = useSWR<Barangay[]>(shouldFetch ? `/api/barangays/by-municipality/${municipalityId}` : null, () =>
+        fetchBarangaysByMunicipality(municipalityId),
+    );
 
-    useEffect(() => {
-        if (!municipalityId) {
-            setBarangays([]);
-            return;
-        }
-
-        setLoading(true);
-        fetchBarangaysByMunicipality(municipalityId)
-            .then(setBarangays)
-            .catch(() => setBarangays([]))
-            .finally(() => setLoading(false));
-    }, [municipalityId]);
-
-    return { barangays, loading };
+    return {
+        barangays: data ?? [],
+        loading: isLoading,
+        error,
+    };
 }
 
 export function useBarangayGeom(barangayId: string) {
