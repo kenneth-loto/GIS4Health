@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 interface Column<T> {
     label: string;
-    accessor: string;
+    accessor: string | ((row: T) => React.ReactNode);
 }
 
 interface Props<T> {
@@ -147,7 +147,14 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                             <TableRow key={row.id}>
                                 <TableCell>{(state.page - 1) * state.perPage + i + 1}</TableCell>
                                 {columns.map((col, index) => {
-                                    const value = getNestedValue(row, col.accessor);
+                                    let value: React.ReactNode;
+
+                                    if (typeof col.accessor === 'function') {
+                                        value = col.accessor(row);
+                                    } else {
+                                        value = getNestedValue(row, col.accessor);
+                                    }
+
                                     return (
                                         <TableCell key={col.label + index}>
                                             <span className={(value == null ? 'text-gray-400 italic' : '') + ' block break-words whitespace-normal'}>
