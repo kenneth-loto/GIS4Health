@@ -1,28 +1,30 @@
 import { fetchMunicipalitiesOption } from '@/api/municipality';
 import type { Municipality } from '@/types';
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
-// 🔹 Simple list fetch (used in dialogs)
 export function useMunicipalitiesOption(dialogOpen: boolean = true) {
-    const [municipalities, setMunicipalities] = useState<Municipality[]>([]);
-    const [loading, setLoading] = useState(false);
+    const shouldFetch = dialogOpen;
+    const { data, error, isLoading } = useSWR<Municipality[]>(shouldFetch ? '/api/municipalities/options' : null, fetchMunicipalitiesOption);
 
-    useEffect(() => {
-        if (!dialogOpen) return;
-
-        setLoading(true);
-
-        fetchMunicipalitiesOption()
-            .then((res) => {
-                setMunicipalities(res);
-            })
-            .catch(() => {
-                setMunicipalities([]);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [dialogOpen]);
-
-    return { municipalities, loading };
+    return {
+        municipalities: data ?? [],
+        loading: isLoading,
+        error,
+    };
 }
+
+// import useSWRImmutable from 'swr/immutable';
+
+// export function useMunicipalitiesOption(dialogOpen: boolean = true) {
+//     const shouldFetch = dialogOpen;
+//     const { data, error, isLoading } = useSWRImmutable<Municipality[]>(
+//         shouldFetch ? '/api/municipalities/options' : null,
+//         fetchMunicipalitiesOption
+//     );
+
+//     return {
+//         municipalities: data ?? [],
+//         loading: isLoading,
+//         error,
+//     };
+// }
