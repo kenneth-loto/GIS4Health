@@ -1,8 +1,11 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
+export * from '@/types/barangay';
 export * from '@/types/category';
 export * from '@/types/disease';
+export * from '@/types/municipality';
+export * from '@/types/patient_info';
 export * from '@/types/severity';
 export * from '@/types/suffix';
 

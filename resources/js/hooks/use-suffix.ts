@@ -5,7 +5,7 @@ import useSWR from 'swr';
 
 export function useSuffixesOption(dialogOpen: boolean = true) {
     const shouldFetch = dialogOpen;
-    const { data, error, isLoading } = useSWR<Suffix[]>(shouldFetch ? '/api/suffixes/options' : null, fetchSuffixesOption);
+    const { data, error, isLoading } = useSWR<Suffix[]>(shouldFetch ? '/api/suffixes/;ist' : null, fetchSuffixesOption);
 
     return {
         suffixes: data ?? [],

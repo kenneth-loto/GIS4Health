@@ -17,10 +17,9 @@ export function useMunicipalitiesOption(dialogOpen: boolean = true) {
 
 // export function useMunicipalitiesOption(dialogOpen: boolean = true) {
 //     const shouldFetch = dialogOpen;
-//     const { data, error, isLoading } = useSWRImmutable<Municipality[]>(
-//         shouldFetch ? '/api/municipalities/options' : null,
-//         fetchMunicipalitiesOption
-//     );
+//     const { data, error, isLoading } = useSWRImmutable<Municipality[]>(shouldFetch ? '/api/municipalities/list' : null, fetchMunicipalitiesOption);
+
+//     console.log('Municipality fetch:', { shouldFetch, data, error, isLoading });
 
 //     return {
 //         municipalities: data ?? [],

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
 use App\Http\Controllers\Api\MunicipalityController;
+use App\Http\Controllers\Api\PatientInfoController;
 use App\Http\Controllers\Api\SeverityController;
 use App\Http\Controllers\Api\SuffixController;
 use Illuminate\Http\Request;
@@ -31,6 +32,9 @@ Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
 // Barangay Route
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
 Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::class, 'barangayGeom']);
+
+// Patient Info Route
+Route::get('/patient_infos', [PatientInfoController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
