@@ -37,4 +37,9 @@ class PatientInfo extends Model
     {
         return $this->belongsTo(Suffix::class);
     }
+
+    public function health_case()
+    {
+        return $this->hasMany(HealthCase::class);
+    }
 }

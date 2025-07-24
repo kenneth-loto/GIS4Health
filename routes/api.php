@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
+use App\Http\Controllers\APi\HealthCaseController;
 use App\Http\Controllers\Api\MunicipalityController;
 use App\Http\Controllers\Api\PatientInfoController;
 use App\Http\Controllers\Api\SeverityController;
@@ -17,6 +18,7 @@ Route::get('/categories/list', [CategoryController::class, 'list']);
 // Disease Route
 Route::get('/diseases/list', [DiseaseController::class, 'list']);
 Route::get('/diseases', [DiseaseController::class, 'index']);
+Route::get('/diseases/by-category/{category}', [DiseaseController::class, 'byCategory']);
 
 // Severity Route
 Route::get('/severities', [SeverityController::class, 'index']);
@@ -35,6 +37,10 @@ Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::c
 
 // Patient Info Route
 Route::get('/patient_infos', [PatientInfoController::class, 'index']);
+Route::get('/patient_infos/list', [PatientInfoController::class, 'list']);
+
+// Health Case Route
+Route::get('/health_cases', [HealthCaseController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

@@ -20,4 +20,9 @@ class Category extends Model
     {
         return $this->hasMany(Disease::class);
     }
+
+    public function health_case()
+    {
+        return $this->hasMany(HealthCase::class);
+    }
 }

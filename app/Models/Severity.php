@@ -14,4 +14,9 @@ class Severity extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function health_case()
+    {
+        return $this->hasMany(HealthCase::class);
+    }
 }

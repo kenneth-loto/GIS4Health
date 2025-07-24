@@ -1,6 +1,7 @@
-import { fetchDiseasesOption, fetchDiseasesTableData } from '@/api/disease';
+import { fetchDiseasesByCategory, fetchDiseasesOption, fetchDiseasesTableData } from '@/api/disease';
 import type { Disease } from '@/types';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 // 🔹 Simple list fetch (used in dialogs)
 export function useDiseasesOption(dialogOpen: boolean = true) {
@@ -58,5 +59,18 @@ export function useDiseasesTableData(search: string = '', page: number = 1, per_
         total,
         lastPage,
         loading,
+    };
+}
+
+export function useDiseasesByCategoryOptions(categoryId: string) {
+    const shouldFetch = Boolean(categoryId);
+    const { data, error, isLoading } = useSWR<Disease[]>(shouldFetch ? `/api/diseases/by-category/${categoryId}` : null, () =>
+        fetchDiseasesByCategory(categoryId),
+    );
+
+    return {
+        diseases: data ?? [],
+        loading: isLoading,
+        error,
     };
 }

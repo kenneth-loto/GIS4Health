@@ -14,6 +14,12 @@ export interface PatientInfoDataResponse {
     total: number;
 }
 
+// For simple list fetch (no pagination, no search)
+export async function fetchPatientInfosOption(): Promise<PatientInfo[]> {
+    const res = await axios.get('/api/patient_infos/list');
+    return res.data.data;
+}
+
 // For dynamic list fetch (with pagination, search)
 export async function fetchPatientInfosTableData(params: PatientInfoDataParams = { page: 1, per_page: 5 }): Promise<PatientInfoDataResponse> {
     const res = await axios.get('/api/patient_infos', { params });

@@ -37,4 +37,11 @@ class DiseaseController extends Controller
 
         return DiseaseTableDataResource::collection($diseases);
     }
+
+    public function byCategory($categoryId)
+    {
+        $diseases = Disease::where('category_id', $categoryId)->orderBy('name')->get();
+        return DiseaseOptionResource::collection($diseases); // or use resolve
+
+    }
 }

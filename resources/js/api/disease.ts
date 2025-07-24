@@ -30,3 +30,8 @@ export async function fetchDiseasesTableData(params: DiseaseDataParams = { page:
         total: res.data.meta.total,
     };
 }
+
+export async function fetchDiseasesByCategory(categoryId: string): Promise<Disease[]> {
+    const res = await axios.get(`/api/diseases/by-category/${categoryId}`);
+    return res.data.data;
+}

@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PatientInfoOptionResource;
 use App\Http\Resources\PatientInfoTableDataResource;
 use App\Models\PatientInfo;
 use Illuminate\Http\Request;
 
 class PatientInfoController extends Controller
 {
+    public function list()
+    {
+        $patient_infos = PatientInfo::orderBy('last_name')->get();
+        return PatientInfoOptionResource::collection($patient_infos); // or use resolve
+    }
+
     public function index(Request $request)
     {
         $query = PatientInfo::with([

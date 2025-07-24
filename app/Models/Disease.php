@@ -21,4 +21,9 @@ class Disease extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function health_case()
+    {
+        return $this->hasMany(HealthCase::class);
+    }
 }

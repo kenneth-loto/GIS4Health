@@ -1,6 +1,31 @@
-import { fetchPatientInfosTableData } from '@/api/patient_info';
+import { fetchPatientInfosOption, fetchPatientInfosTableData } from '@/api/patient_info';
 import type { PatientInfo } from '@/types';
 import { useEffect, useState } from 'react';
+
+// 🔹 Simple list fetch (used in dialogs)
+export function usePatientInfosOption(dialogOpen: boolean = true) {
+    const [patient_infos, setPatientInfos] = useState<PatientInfo[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!dialogOpen) return;
+
+        setLoading(true);
+
+        fetchPatientInfosOption()
+            .then((res) => {
+                setPatientInfos(res);
+            })
+            .catch(() => {
+                setPatientInfos([]);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [dialogOpen]);
+
+    return { patient_infos, loading };
+}
 
 // 🔹 Dynamic list fetch (used in index with pagination + search)
 export function usePatientInfosTableData(search: string = '', page: number = 1, per_page: number = 5) {
