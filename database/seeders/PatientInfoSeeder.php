@@ -22,7 +22,7 @@ class PatientInfoSeeder extends Seeder
                 DB::raw('ST_X(ST_Centroid(barangays.geom)) as longitude'),
                 DB::raw('ST_Y(ST_Centroid(barangays.geom)) as latitude')
             )
-            ->limit(3) // Change or remove limit as needed
+            ->limit(500) // Change or remove limit as needed
             ->get();
 
         foreach ($barangays as $index => $bgy) {
