@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\APi\BarangayChoroplethController;
 use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
@@ -34,6 +35,7 @@ Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
 // Barangay Route
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
 Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::class, 'barangayGeom']);
+Route::get('/barangays/choropleth', BarangayChoroplethController::class);
 
 // Patient Info Route
 Route::get('/patient_infos', [PatientInfoController::class, 'index']);

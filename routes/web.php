@@ -21,3 +21,4 @@ require __DIR__ . '/severity.php';
 require __DIR__ . '/suffix.php';
 require __DIR__ . '/patient_info.php';
 require __DIR__ . '/health_case.php';
+require __DIR__ . '/choropleth.php';
