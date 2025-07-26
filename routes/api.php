@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DiseaseController;
 use App\Http\Controllers\APi\HealthCaseController;
+use App\Http\Controllers\Api\HeatMapController;
 use App\Http\Controllers\Api\MunicipalityController;
 use App\Http\Controllers\Api\PatientInfoController;
 use App\Http\Controllers\Api\SeverityController;
@@ -35,7 +36,6 @@ Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
 // Barangay Route
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
 Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::class, 'barangayGeom']);
-Route::get('/barangays/choropleth', BarangayChoroplethController::class);
 
 // Patient Info Route
 Route::get('/patient_infos', [PatientInfoController::class, 'index']);
@@ -43,6 +43,12 @@ Route::get('/patient_infos/list', [PatientInfoController::class, 'list']);
 
 // Health Case Route
 Route::get('/health_cases', [HealthCaseController::class, 'index']);
+
+// Heat Map Route
+Route::get('/heatmap', HeatMapController::class);
+
+// Choropleth Map
+Route::get('/barangays/choropleth', BarangayChoroplethController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
