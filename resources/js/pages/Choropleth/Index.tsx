@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head } from '@inertiajs/react';
-import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,9 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ComboboxField } from '@/components/CustomComponents/Combobox';
 
 import { fetchBarangayChoroplethGeoJSON } from '@/api/barangay-choropleth-geojson';
-import { useCategoriesOption } from '@/hooks/use-category';
-import { useDiseasesByCategoryOptions } from '@/hooks/use-disease';
 
+import { useFilterOptions } from '@/hooks/use-filter-options';
 import Choropleth, { ChoroplethRef } from '@/pages/Choropleth/ChoroplethMap';
 
 const filterSchema = z.object({
@@ -34,9 +32,6 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Choropleth', href: '/choropleth
 
 export default function ChoroplethIndex() {
     const choroplethRef = useRef<ChoroplethRef>(null);
-    const mapRef = useRef<maplibregl.Map>(null);
-    const mapContainerRef = useRef<HTMLDivElement>(null);
-
     const [geojson, setGeojson] = useState<GeoJSON.FeatureCollection | null>(null);
     const [loadingMap, setLoadingMap] = useState(false);
     const [mapLoaded, setMapLoaded] = useState(false);
@@ -60,14 +55,12 @@ export default function ChoroplethIndex() {
         getValues,
     } = form;
 
-    const selectedCategoryId = watch('category_id');
-
-    const { categories, loading: loadingCategories } = useCategoriesOption();
-    const { diseases, loading: loadingDiseases } = useDiseasesByCategoryOptions(selectedCategoryId);
+    // Filters
+    const { categories, diseases, loading, selected } = useFilterOptions(control);
 
     const onSubmit = async (data: FilterFormValues) => {
+        setLoadingMap(true);
         try {
-            setLoadingMap(true);
             const result = await fetchBarangayChoroplethGeoJSON(data);
             setGeojson(result);
         } catch (error) {
@@ -139,7 +132,7 @@ export default function ChoroplethIndex() {
                                                         }}
                                                         items={categories}
                                                         placeholder="Select a category"
-                                                        loading={loadingCategories}
+                                                        loading={loading.categories}
                                                         getLabel={(item) => item.name}
                                                     />
                                                 </FormControl>
@@ -161,9 +154,9 @@ export default function ChoroplethIndex() {
                                                         onValueChange={field.onChange}
                                                         items={diseases}
                                                         placeholder="Select a disease"
-                                                        loading={loadingDiseases}
+                                                        loading={loading.diseases}
                                                         getLabel={(item) => item.name}
-                                                        disabled={!selectedCategoryId}
+                                                        disabled={!selected.categoryId}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />

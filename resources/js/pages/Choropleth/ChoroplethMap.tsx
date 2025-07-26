@@ -23,11 +23,11 @@ const Choropleth = forwardRef<ChoroplethRef, ChoroplethProps>(({ geojson, days, 
             const map = mapInstance.current;
             if (!map) return;
 
-            map.jumpTo({
+            map.flyTo({
                 center: [124.4761, 11.6433],
                 zoom: 10,
-                pitch: 45,
-                bearing: -17.6,
+                speed: 1.2,
+                curve: 1.42,
             });
 
             // Clean up existing choropleth layer and source
