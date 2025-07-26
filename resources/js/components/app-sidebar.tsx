@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Biohazard, FileStack, LayoutGrid, Map, OctagonAlert, Quote, Stethoscope, UserPlus } from 'lucide-react';
+import { Biohazard, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Quote, Stethoscope, UserPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -15,9 +15,15 @@ const mainNavItems: NavItem[] = [
     },
 
     {
+        title: 'HeatMap',
+        href: '/heatmap',
+        icon: Droplets,
+    },
+
+    {
         title: 'Choropleth',
         href: '/choropleth',
-        icon: Map,
+        icon: Earth,
     },
 
     {
