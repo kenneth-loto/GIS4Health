@@ -57,7 +57,7 @@ export default function ChatBot() {
     };
 
     return (
-        <Card className={`fixed right-5 z-50 flex w-[400px] flex-col border shadow-lg ${url === '/' ? 'bottom-20' : 'top-20'}`}>
+        <Card className={`fixed right-5 z-50 flex flex-col border shadow-lg ${url === '/' ? 'bottom-20' : 'top-20'} w-[90%] max-w-full sm:w-[400px]`}>
             <CardHeader>
                 <CardTitle>GIS4Health</CardTitle>
                 <CardDescription>GIS4Health: Geospatial Information System for Health Monitoring in Biliran</CardDescription>
