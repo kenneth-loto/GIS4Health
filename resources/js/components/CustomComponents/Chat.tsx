@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { Textarea } from '../ui/textarea';
 
 import systemPrompt from '@/data/faq-knowledge.json';
+import { usePage } from '@inertiajs/react';
 
 const formSchema = z.object({
     input: z.string().min(1, 'Message is required'),
@@ -20,6 +21,7 @@ export default function ChatBot() {
     const [messages, setMessages] = useState([{ role: systemPrompt.role, content: systemPrompt.content }]);
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const { url } = usePage();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -55,7 +57,7 @@ export default function ChatBot() {
     };
 
     return (
-        <Card className="fixed right-5 bottom-20 z-50 flex w-[400px] flex-col border shadow-lg">
+        <Card className={`fixed right-5 z-50 flex w-[400px] flex-col border shadow-lg ${url === '/' ? 'bottom-20' : 'top-20'}`}>
             <CardHeader>
                 <CardTitle>GIS4Health</CardTitle>
                 <CardDescription>GIS4Health: Geospatial Information System for Health Monitoring in Biliran</CardDescription>
