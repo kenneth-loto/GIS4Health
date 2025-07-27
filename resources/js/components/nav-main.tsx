@@ -10,6 +10,7 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { NavItem } from '@/types';
+import { Link } from '@inertiajs/react';
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 
 export interface NavSubItem {
@@ -42,10 +43,10 @@ export function NavMain({ items }: { items: NavItem[] }) {
                                             {item.items?.map((subItem) => (
                                                 <SidebarMenuSubItem key={subItem.title}>
                                                     <SidebarMenuSubButton asChild>
-                                                        <a href={subItem.href} className="flex items-center gap-2">
-                                                            {subItem.icon && <subItem.icon className="h-4 w-4" />}
+                                                        <Link href={subItem.href}>
+                                                            {subItem.icon && <subItem.icon />}
                                                             <span>{subItem.title}</span>
-                                                        </a>
+                                                        </Link>
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
                                             ))}
@@ -59,10 +60,10 @@ export function NavMain({ items }: { items: NavItem[] }) {
                     return (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton tooltip={item.title} asChild>
-                                <a href={item.href} className="flex items-center gap-2">
-                                    {item.icon && <item.icon className="h-4 w-4" />}
+                                <Link href={item.href}>
+                                    {item.icon && <item.icon />}
                                     <span>{item.title}</span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     );
