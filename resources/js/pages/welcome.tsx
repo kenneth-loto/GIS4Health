@@ -1,8 +1,13 @@
+import ChatBot from '@/components/CustomComponents/Chat';
+import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
+import { MessageSquare, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const [chatOpen, setChatOpen] = useState(false);
 
     return (
         <>
@@ -783,6 +788,17 @@ export default function Welcome() {
                             <div className="absolute inset-0 rounded-t-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-t-none lg:rounded-r-lg dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]" />
                         </div>
                     </main>
+
+                    {/* Floating Chat Toggle Button */}
+                    <Button
+                        className="fixed right-5 bottom-5 z-50 flex h-10 w-10 items-center justify-center rounded-full"
+                        onClick={() => setChatOpen(!chatOpen)}
+                    >
+                        {chatOpen ? <X /> : <MessageSquare />}
+                    </Button>
+
+                    {/* Chat Modal/Widget */}
+                    {chatOpen && <ChatBot />}
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
             </div>
