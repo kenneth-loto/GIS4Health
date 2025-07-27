@@ -10,12 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { Textarea } from '../ui/textarea';
 
+import systemPrompt from '@/data/faq-knowledge.json';
+
 const formSchema = z.object({
     input: z.string().min(1, 'Message is required'),
 });
 
 export default function ChatBot() {
-    const [messages, setMessages] = useState([{ role: 'system', content: 'You are a helpful assistant.' }]);
+    const [messages, setMessages] = useState([{ role: systemPrompt.role, content: systemPrompt.content }]);
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -25,6 +27,11 @@ export default function ChatBot() {
     });
 
     const filteredMessages = messages.filter((msg) => msg.role !== 'system');
+
+    // Incase knowledge became dynamic or from an api.
+    // useEffect(() => {
+    //     setMessages([{ role: systemPrompt.role, content: systemPrompt.content }]);
+    // }, []);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -61,7 +68,7 @@ export default function ChatBot() {
                     }`}
                 >
                     {filteredMessages.length === 0 ? (
-                        <div className="text-center text-sm text-muted-foreground italic">Have something in mind? Ask away!</div>
+                        <div className="text-center text-sm text-muted-foreground italic">Ask me anything about GIS4Health.</div>
                     ) : (
                         filteredMessages.map((msg, idx) => (
                             <div key={idx} className={`flex items-start gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -117,6 +124,13 @@ export default function ChatBot() {
                                         <FormControl>
                                             <Textarea
                                                 {...field}
+                                                aria-label="Chat input"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        form.handleSubmit(handleSubmit)();
+                                                    }
+                                                }}
                                                 placeholder="Ask a question..."
                                                 className="max-h-[5.5rem] resize-none"
                                                 disabled={loading}
