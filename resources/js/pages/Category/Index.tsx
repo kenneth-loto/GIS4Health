@@ -10,7 +10,10 @@ import { Category, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Categories', href: '/categories' }];
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Utilities', href: '' },
+    { title: 'Categories', href: '/categories' },
+];
 
 export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
