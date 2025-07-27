@@ -24,11 +24,13 @@ export interface NavGroup {
     items: NavItem[];
 }
 
+// Added sub-item for dropdown, and remove null from lucid.
 export interface NavItem {
     title: string;
     href: string;
-    icon?: LucideIcon | null;
+    icon?: LucideIcon;
     isActive?: boolean;
+    items?: NavSubItem[];
 }
 
 export interface SharedData {

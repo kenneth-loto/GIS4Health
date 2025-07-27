@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Biohazard, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Quote, Stethoscope, UserPlus } from 'lucide-react';
+import { AudioWaveform, Biohazard, Cog, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Stethoscope, UserPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -39,27 +39,35 @@ const mainNavItems: NavItem[] = [
     },
 
     {
-        title: 'Categories',
-        href: '/categories',
-        icon: FileStack,
-    },
-
-    {
         title: 'Diseases',
         href: '/diseases',
         icon: Biohazard,
     },
 
     {
-        title: 'Severity',
-        href: '/severities',
-        icon: OctagonAlert,
-    },
+        title: 'Utilities',
+        href: '/',
+        icon: Cog,
+        isActive: true,
+        items: [
+            {
+                title: 'Categories',
+                href: '/categories',
+                icon: FileStack,
+            },
 
-    {
-        title: 'Suffix',
-        href: '/suffixes',
-        icon: Quote,
+            {
+                title: 'Severity',
+                href: '/severities',
+                icon: OctagonAlert,
+            },
+
+            {
+                title: 'Suffix',
+                href: '/suffixes',
+                icon: AudioWaveform,
+            },
+        ],
     },
 ];
 
