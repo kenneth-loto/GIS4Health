@@ -16,7 +16,7 @@ export async function sendMessageToAI(messages: { role: string; content: string 
                     'HTTP-Referer': window.location.origin,
                     'Content-Type': 'application/json',
                 },
-            }
+            },
         );
 
         return data.choices?.[0]?.message?.content ?? null;

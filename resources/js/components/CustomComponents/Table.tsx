@@ -1,13 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useTableReducer } from '@/hooks/use-table-reducer';
-import { ChevronsLeft, ChevronsRight, Edit, Search, Trash2 } from 'lucide-react';
+import { Edit, Search, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
+import { TablePagination } from './Table/TablePagination';
 
 interface Column<T> {
     label: string;
@@ -187,59 +187,7 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                 </TableBody>
             </Table>
 
-            <div className="flex flex-col items-center justify-between gap-4 pt-2 lg:flex-row">
-                <p className="text-sm text-muted-foreground">
-                    Page {isNaN(state.page) ? 1 : state.page} of {isNaN(totalPages) ? 1 : totalPages} — Total {state.total ?? 0} item
-                    {state.total === 1 ? '' : 's'}
-                </p>
-                <div className="flex flex-wrap items-center gap-1">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => dispatch({ type: 'SET_PAGE', payload: 1 })}
-                                    disabled={state.page === 1}
-                                    aria-label="First page"
-                                >
-                                    <ChevronsLeft className="h-4 w-4" />
-                                </Button>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() => dispatch({ type: 'SET_PAGE', payload: state.page - 1 })}
-                                    className={state.page === 1 ? 'pointer-events-none opacity-50' : ''}
-                                    aria-label="Previous page"
-                                />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <Button size="sm" variant="default" disabled className="cursor-default">
-                                    {state.page}
-                                </Button>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => dispatch({ type: 'SET_PAGE', payload: state.page + 1 })}
-                                    className={state.page === totalPages ? 'pointer-events-none opacity-50' : ''}
-                                    aria-label="Next page"
-                                />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => dispatch({ type: 'SET_PAGE', payload: totalPages })}
-                                    disabled={state.page === totalPages}
-                                    aria-label="Last page"
-                                >
-                                    <ChevronsRight className="h-4 w-4" />
-                                </Button>
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
-            </div>
+            <TablePagination page={state.page} total={state.total} totalPages={totalPages} dispatch={dispatch} />
         </div>
     );
 }
