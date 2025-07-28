@@ -13,7 +13,8 @@ class DiseaseController extends Controller
     public function list()
     {
         $diseases = Disease::orderBy('name')->get();
-        return DiseaseOptionResource::collection($diseases); // or use resolve
+
+        return DiseaseOptionResource::collection($diseases);
     }
 
     public function index(Request $request)
@@ -22,6 +23,7 @@ class DiseaseController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->input('search');
+
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'ILIKE', "%{$search}%")
                     ->orWhere('short_description', 'ILIKE', "%{$search}%")
@@ -29,6 +31,10 @@ class DiseaseController extends Controller
                         $subQuery->where('name', 'ILIKE', "%{$search}%");
                     });
             });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
         }
 
         $diseases = $query->orderBy('name')
@@ -40,8 +46,10 @@ class DiseaseController extends Controller
 
     public function byCategory($categoryId)
     {
-        $diseases = Disease::where('category_id', $categoryId)->orderBy('name')->get();
-        return DiseaseOptionResource::collection($diseases); // or use resolve
+        $diseases = Disease::where('category_id', $categoryId)
+            ->orderBy('name')
+            ->get();
 
+        return DiseaseOptionResource::collection($diseases);
     }
 }

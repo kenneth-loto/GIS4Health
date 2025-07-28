@@ -1,3 +1,4 @@
+import { fetchCategoriesOption } from '@/api/category';
 import { fetchDiseasesTableData } from '@/api/disease';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
@@ -51,6 +52,20 @@ export default function Index() {
                     fetchFn={fetchDiseasesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
+                    filters={[
+                        {
+                            label: 'Category',
+                            accessor: 'category.name',
+                            param: 'category_id',
+                            fetchOptions: async () => {
+                                const data = await fetchCategoriesOption();
+                                return data.map((category) => ({
+                                    id: category.id,
+                                    label: category.name,
+                                }));
+                            },
+                        },
+                    ]}
                 />
 
                 <DiseaseDialog open={isOpen} onOpenChange={closeForm} disease={data} isEditing={mode === 'edit'} modal={false} />

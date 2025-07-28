@@ -109,6 +109,13 @@ export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, 
                                             placeholder="e.g. A bacterial infection that mainly affects the lungs and spreads through the air."
                                             className="h-24 resize-none overflow-y-auto"
                                             {...field}
+                                            aria-label="Chat input"
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                    form.handleSubmit(onSubmit)();
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                     <FormMessage />
