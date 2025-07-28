@@ -7,7 +7,7 @@ export async function sendMessageToAI(messages: { role: string; content: string 
         const { data } = await axios.post(
             API_URL,
             {
-                model: 'deepseek/deepseek-chat-v3-0324:free',
+                model: 'deepseek/deepseek-r1-0528-qwen3-8b:free',
                 messages,
             },
             {

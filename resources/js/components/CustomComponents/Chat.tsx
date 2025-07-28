@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { Textarea } from '../ui/textarea';
 
-import systemPrompt from '@/data/faq-knowledge.json';
+import systemPrompt from '@/data/knowledge.json';
 import { usePage } from '@inertiajs/react';
 
 const formSchema = z.object({
