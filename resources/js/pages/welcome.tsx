@@ -1,4 +1,4 @@
-import ChatBot from '@/components/CustomComponents/Chat';
+import ChatBot from '@/components/CustomComponents/ChatBot';
 import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';

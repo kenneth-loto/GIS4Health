@@ -1,4 +1,4 @@
-import ChatBot from '@/components/CustomComponents/Chat';
+import ChatBot from '@/components/CustomComponents/ChatBot';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';

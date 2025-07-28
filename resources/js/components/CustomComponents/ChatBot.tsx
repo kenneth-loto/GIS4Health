@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { sendMessageToAI } from '@/api/chat';
+import { sendMessageToAI } from '@/api/chatbot';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
@@ -29,11 +29,6 @@ export default function ChatBot() {
     });
 
     const filteredMessages = messages.filter((msg) => msg.role !== 'system');
-
-    // Incase knowledge became dynamic or from an api.
-    // useEffect(() => {
-    //     setMessages([{ role: systemPrompt.role, content: systemPrompt.content }]);
-    // }, []);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -142,7 +137,7 @@ export default function ChatBot() {
                                 )}
                             />
                             <Button type="submit" disabled={loading}>
-                                <Send className="h-4 w-4" />
+                                <Send />
                             </Button>
                         </form>
                     </Form>
