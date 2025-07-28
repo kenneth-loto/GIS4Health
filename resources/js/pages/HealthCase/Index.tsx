@@ -1,4 +1,7 @@
+import { fetchCategoriesOption } from '@/api/category';
+import { fetchDiseasesByCategory } from '@/api/disease';
 import { fetchHealthCasesTableData } from '@/api/health_case';
+import { fetchSeveritiesOption } from '@/api/severity';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
@@ -67,7 +70,54 @@ export default function Index() {
                     <Button onClick={openAdd}>Add</Button>
                 </div>
 
-                <CustomTable key={tableKey} columns={columns} fetchFn={fetchHealthCasesTableData} onEdit={openEdit} onDelete={openDelete} />
+                <CustomTable
+                    key={tableKey}
+                    columns={columns}
+                    fetchFn={fetchHealthCasesTableData}
+                    onEdit={openEdit}
+                    onDelete={openDelete}
+                    filters={[
+                        {
+                            label: 'Category',
+                            accessor: 'category.name',
+                            param: 'category_id',
+                            fetchOptions: async () => {
+                                const data = await fetchCategoriesOption();
+                                return data.map((category) => ({
+                                    id: category.id,
+                                    label: category.name,
+                                }));
+                            },
+                        },
+                        {
+                            label: 'Disease',
+                            accessor: 'disease.name',
+                            param: 'disease_id',
+                            dependsOn: 'category_id',
+                            fetchOptions: async (filters) => {
+                                const categoryId = filters?.category_id;
+                                if (!categoryId) return [];
+                                const data = await fetchDiseasesByCategory(categoryId);
+                                return data.map((disease) => ({
+                                    id: disease.id,
+                                    label: disease.name,
+                                }));
+                            },
+                        },
+                        {
+                            label: 'Severity',
+                            accessor: 'severity.name',
+                            param: 'severity_id',
+                            fetchOptions: async () => {
+                                const data = await fetchSeveritiesOption();
+                                return data.map((severity) => ({
+                                    id: severity.id,
+                                    label: severity.name,
+                                }));
+                            },
+                        },
+                    ]}
+                />
 
                 <HealthCaseDialog open={isOpen} onOpenChange={closeForm} health_case={data} isEditing={mode === 'edit'} modal={false} />
 

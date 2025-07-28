@@ -4,6 +4,7 @@ import type { Config } from 'ziggy-js';
 export * from '@/types/barangay';
 export * from '@/types/category';
 export * from '@/types/disease';
+export * from '@/types/filter-config';
 export * from '@/types/health_case';
 export * from '@/types/municipality';
 export * from '@/types/patient_info';
