@@ -44,7 +44,6 @@ function tableReducer<T>(state: TableState<T>, action: TableAction<T>): TableSta
                     ...state.filters,
                     [action.payload.key]: action.payload.value,
                 },
-                page: 1,
             };
         default:
             return state;
