@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\APi\BarangayChoroplethController;
 use App\Http\Controllers\Api\BarangayController;
 use App\Http\Controllers\Api\CategoryController;
@@ -49,6 +50,8 @@ Route::get('/heatmap', HeatMapController::class);
 
 // Choropleth Map
 Route::get('/barangays/choropleth', BarangayChoroplethController::class);
+
+Route::get('/activity-logs', [ActivityLogController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
