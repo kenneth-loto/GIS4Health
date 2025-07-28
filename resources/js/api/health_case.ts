@@ -5,6 +5,9 @@ export interface HealthCaseDataParams {
     page?: number;
     per_page?: number;
     search?: string;
+    category_id?: string;
+    disease_id?: string;
+    severity_id?: string;
 }
 
 export interface HealthCaseDataResponse {

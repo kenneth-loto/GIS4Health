@@ -5,6 +5,7 @@ export interface DiseaseDataParams {
     page?: number;
     per_page?: number;
     search?: string;
+    category_id?: string;
 }
 
 export interface DiseaseDataResponse {
