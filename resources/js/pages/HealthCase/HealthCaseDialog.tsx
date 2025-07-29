@@ -14,7 +14,7 @@ import DialogActionButtons from '@/components/CustomComponents/DialogActionButto
 import { useCategoriesOption } from '@/hooks/use-category';
 import { useDiseasesByCategoryOptions } from '@/hooks/use-disease';
 import { usePatientInfosOption } from '@/hooks/use-patient-info';
-import { useSeveritiesOption } from '@/hooks/use-severity';
+import { useSeveritiesOptionList } from '@/hooks/useSeverity';
 import { HealthCase } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
@@ -52,7 +52,7 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
     const { patient_infos, loading: loadingPatientInfos } = usePatientInfosOption(open);
     const { categories, loading: loadingCategories } = useCategoriesOption(open);
     const { diseases, loading: loadingDiseases } = useDiseasesByCategoryOptions(open ? selectedCategoryId : '');
-    const { severities, loading: loadingSeverities } = useSeveritiesOption(open);
+    const { data: severities, loading } = useSeveritiesOptionList();
 
     const isDiseaseDisabled = !selectedCategoryId;
 
@@ -175,7 +175,7 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
                                             onValueChange={field.onChange}
                                             items={severities}
                                             placeholder="Select a severity"
-                                            loading={loadingSeverities}
+                                            loading={loading}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.severity_id}
                                         />
