@@ -12,7 +12,7 @@ class ActivityLogController extends Controller
     {
         $logs = Activity::with('causer') // eager load user
             ->latest()
-            ->limit(10)
+            ->limit(3)
             ->get();
 
         return response()->json($logs);
