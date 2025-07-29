@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { AudioWaveform, Biohazard, Cog, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Stethoscope, UserPlus } from 'lucide-react';
+import { AudioWaveform, Biohazard, Building2, Cog, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Stethoscope, UserPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -54,6 +54,12 @@ const mainNavItems: NavItem[] = [
                 title: 'Categories',
                 href: '/categories',
                 icon: FileStack,
+            },
+
+            {
+                title: 'Municipalities',
+                href: '/municipalities',
+                icon: Building2,
             },
 
             {

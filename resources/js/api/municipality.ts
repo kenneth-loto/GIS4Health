@@ -1,8 +1,5 @@
 import type { Municipality } from '@/types';
-import axios from 'axios';
+import { DataParams, fetchOptionList, fetchTableData } from '@/utils/api-utils';
 
-// For simple list fetch (no pagination, no search)
-export async function fetchMunicipalitiesOption(): Promise<Municipality[]> {
-    const res = await axios.get('/api/municipalities/list');
-    return res.data.data;
-}
+export const fetchMunicipalitiesOption = () => fetchOptionList<Municipality>('municipalities');
+export const fetchMunicipalitiesTableData = (params?: DataParams) => fetchTableData<Municipality>('municipalities', params);

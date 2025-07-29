@@ -2,16 +2,16 @@ import { useWatch } from 'react-hook-form';
 import { useBarangayOptions } from './use-barangay';
 import { useCategoriesOption } from './use-category';
 import { useDiseasesByCategoryOptions } from './use-disease';
-import { useMunicipalitiesOption } from './use-municipality';
-import { useSeveritiesOption } from './use-severity';
+import { useMunicipalitiesOption } from './useMunicipality';
+import { useSeveritiesOptionList } from './useSeverity';
 
 export function useFilterOptions(control: any) {
     const selectedCategoryId = useWatch({ control, name: 'category_id' });
     const selectedMunicipalityId = useWatch({ control, name: 'municipality_id' });
 
     const { categories, loading: loadingCategories } = useCategoriesOption();
-    const { municipalities, loading: loadingMunicipalities } = useMunicipalitiesOption();
-    const { severities, loading: loadingSeverities } = useSeveritiesOption();
+    const { data: municipalities, loading: loadingMunicipalities } = useMunicipalitiesOption();
+    const { data: severities, loading: loadingSeverities } = useSeveritiesOptionList();
     const { diseases, loading: loadingDiseases } = useDiseasesByCategoryOptions(selectedCategoryId);
     const { barangays, loading: loadingBarangays } = useBarangayOptions(selectedMunicipalityId ?? '');
 

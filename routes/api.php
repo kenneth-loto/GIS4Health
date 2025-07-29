@@ -33,6 +33,7 @@ Route::get('/suffixes/list', [SuffixController::class, 'list']);
 
 // Municipality Route
 Route::get('/municipalities/list', [MunicipalityController::class, 'list']);
+Route::get('/municipalities', [MunicipalityController::class, 'index']);
 
 // Barangay Route
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
