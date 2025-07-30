@@ -11,7 +11,7 @@ export function useOptionList<T>(key: string, fetcher: () => Promise<T[]>) {
     };
 }
 
-export function usePaginatedTableData<T>(
+export function useTableData<T>(
     key: string,
     fetcher: (params: DataParams) => Promise<DataResponse<T>>,
     search: string = '',

@@ -1,5 +1,5 @@
 import { fetchDiseasesByCategoryOptionList, fetchDiseasesOptionList, fetchDiseasesTableData } from '@/api/disease';
-import { useFilteredOptionList, useOptionList, usePaginatedTableData } from '@/hooks/useHooks';
+import { useFilteredOptionList, useOptionList, useTableData } from '@/hooks/useHooks';
 import type { Disease } from '@/types';
 
 export function useDiseasesOptionList() {
@@ -7,7 +7,7 @@ export function useDiseasesOptionList() {
 }
 
 export function useDiseasesTableData(search = '', page = 1, per_page = 5) {
-    return usePaginatedTableData<Disease>('diseases', fetchDiseasesTableData, search, page, per_page);
+    return useTableData<Disease>('diseases', fetchDiseasesTableData, search, page, per_page);
 }
 
 export function useDiseasesByCategoryOptionList(categoryId: string) {
