@@ -5,6 +5,6 @@ export const fetchDiseasesOptionList = () => fetchOptionList<Disease>('diseases'
 
 export const fetchDiseasesTableData = (params?: DataParams) => fetchTableData<Disease>('diseases', params);
 
-export function fetchDiseasesByCategory(categoryId: string): Promise<Disease[]> {
+export function fetchDiseasesByCategoryOptionList(categoryId: string): Promise<Disease[]> {
     return fetchBy<Disease>('diseases', 'category', categoryId);
 }

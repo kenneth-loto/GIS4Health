@@ -5,6 +5,6 @@ export function fetchBarangaysByMunicipalityOptionList(municipalityId: string): 
     return fetchBy<Barangay>('barangays', 'municipality', municipalityId);
 }
 
-export function fetchBarangayGeom(barangayId: string) {
+export function fetchFilteredBarangayGeom(barangayId: string) {
     return fetchGeomBy('barangays', 'barangay', barangayId);
 }
