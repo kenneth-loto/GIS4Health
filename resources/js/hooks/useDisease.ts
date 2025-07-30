@@ -1,6 +1,6 @@
 import { fetchDiseasesByCategory, fetchDiseasesOptionList, fetchDiseasesTableData } from '@/api/disease';
+import { useFilteredOptionList, useOptionList, usePaginatedTableData } from '@/hooks/useHooks';
 import type { Disease } from '@/types';
-import { useFilteredOptionList, useOptionList, usePaginatedTableData } from './useHooks';
 
 export function useDiseasesOptionList() {
     return useOptionList<Disease>('diseases', fetchDiseasesOptionList);
