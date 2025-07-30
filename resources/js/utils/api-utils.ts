@@ -27,3 +27,13 @@ export async function fetchTableData<T>(endpoint: string, params: DataParams = {
         total: res.data.meta.total,
     };
 }
+
+export async function fetchBy<T>(endpoint: string, key: string, value: string): Promise<T[]> {
+    const res = await axios.get(`/api/${endpoint}/by-${key}/${value}`);
+    return res.data.data;
+}
+
+export async function fetchGeomBy(endpoint: string, key: string, value: string): Promise<any> {
+    const res = await axios.get(`/api/${endpoint}/${key}-geometries/${value}`);
+    return res.data.data.geom;
+}

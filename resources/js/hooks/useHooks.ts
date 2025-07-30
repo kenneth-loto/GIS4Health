@@ -1,4 +1,4 @@
-import type { DataParams, DataResponse } from '@/utils/api-utils';
+import { fetchGeomBy, type DataParams, type DataResponse } from '@/utils/api-utils';
 import useSWR from 'swr';
 
 export function useOptionList<T>(key: string, fetcher: () => Promise<T[]>) {
@@ -38,6 +38,18 @@ export function useFilteredOptionList<T>(key: string, value: string, fetcher: (v
 
     return {
         data: data ?? [],
+        loading: isLoading,
+        error,
+    };
+}
+
+export function useFilteredGeom(endpoint: string, key: string, value: string) {
+    const shouldFetch = Boolean(value);
+
+    const { data, error, isLoading } = useSWR(shouldFetch ? `${endpoint}-${key}-geometries-${value}` : null, () => fetchGeomBy(endpoint, key, value));
+
+    return {
+        geom: data ?? null,
         loading: isLoading,
         error,
     };
