@@ -1,4 +1,4 @@
-import { fetchCategoriesOption } from '@/api/category';
+import { fetchCategoriesOptionList } from '@/api/category';
 import { fetchDiseasesTableData } from '@/api/disease';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
@@ -58,7 +58,7 @@ export default function Index() {
                             accessor: 'category.name',
                             param: 'category_id',
                             fetchOptions: async () => {
-                                const data = await fetchCategoriesOption();
+                                const data = await fetchCategoriesOptionList();
                                 return data.map((category) => ({
                                     id: category.id,
                                     label: category.name,

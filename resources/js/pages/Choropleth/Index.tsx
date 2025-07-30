@@ -17,7 +17,7 @@ import { ComboboxField } from '@/components/CustomComponents/Combobox';
 
 import { fetchBarangayChoroplethGeoJSON } from '@/api/barangay-choropleth-geojson';
 
-import { useFilterOptions } from '@/hooks/use-filter-options';
+import { useDropdownOptions } from '@/hooks/useDropdownOptions';
 import Choropleth, { ChoroplethRef } from '@/pages/Choropleth/ChoroplethMap';
 
 const filterSchema = z.object({
@@ -46,8 +46,6 @@ export default function ChoroplethIndex() {
     });
 
     const {
-        control,
-        watch,
         setValue,
         reset,
         handleSubmit,
@@ -56,7 +54,7 @@ export default function ChoroplethIndex() {
     } = form;
 
     // Filters
-    const { categories, diseases, loading, selected } = useFilterOptions(control);
+    const { categories, diseases, loading, selected } = useDropdownOptions(form);
 
     const onSubmit = async (data: FilterFormValues) => {
         setLoadingMap(true);
@@ -94,7 +92,6 @@ export default function ChoroplethIndex() {
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                     {/* Time Range */}
                                     <FormField
-                                        control={control}
                                         name="time_range"
                                         render={({ field }) => (
                                             <FormItem>
@@ -118,7 +115,6 @@ export default function ChoroplethIndex() {
 
                                     {/* Category */}
                                     <FormField
-                                        control={control}
                                         name="category_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -143,7 +139,6 @@ export default function ChoroplethIndex() {
 
                                     {/* Disease */}
                                     <FormField
-                                        control={control}
                                         name="disease_id"
                                         render={({ field }) => (
                                             <FormItem>

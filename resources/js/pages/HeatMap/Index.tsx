@@ -16,7 +16,7 @@ import { DatePicker } from '@/components/CustomComponents/DatePicker';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRequiredLabel } from '@/components/CustomComponents/Form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFilterOptions } from '@/hooks/use-filter-options';
+import { useDropdownOptions } from '@/hooks/useDropdownOptions';
 
 // Schema
 const FilterSchema = z
@@ -52,9 +52,7 @@ export default function Index() {
     });
 
     const {
-        control,
         handleSubmit,
-        watch,
         reset,
         setValue,
         formState: { isSubmitting },
@@ -67,7 +65,7 @@ export default function Index() {
     const [loadingMap, setLoadingMap] = useState(false);
 
     // Filters
-    const { categories, municipalities, severities, diseases, barangays, loading, selected } = useFilterOptions(control);
+    const { categories, municipalities, severities, diseases, barangays, loading, selected } = useDropdownOptions(form);
 
     // Handlers
     const onSubmit = async (data: FilterFormValues) => {
@@ -106,7 +104,6 @@ export default function Index() {
                             <Form {...form}>
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                     <FormField
-                                        control={control}
                                         name="municipality_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -131,7 +128,6 @@ export default function Index() {
                                     />
 
                                     <FormField
-                                        control={control}
                                         name="barangay_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -154,7 +150,6 @@ export default function Index() {
                                     />
 
                                     <FormField
-                                        control={control}
                                         name="category_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -178,7 +173,6 @@ export default function Index() {
                                     />
 
                                     <FormField
-                                        control={control}
                                         name="disease_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -200,7 +194,6 @@ export default function Index() {
                                     />
 
                                     <FormField
-                                        control={control}
                                         name="severity_id"
                                         render={({ field }) => (
                                             <FormItem>
@@ -222,7 +215,6 @@ export default function Index() {
 
                                     <div className="flex gap-4">
                                         <FormField
-                                            control={control}
                                             name="from"
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
@@ -235,7 +227,6 @@ export default function Index() {
                                             )}
                                         />
                                         <FormField
-                                            control={control}
                                             name="to"
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
