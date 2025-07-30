@@ -11,10 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { ComboboxField } from '@/components/CustomComponents/Combobox';
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 
-import { useCategoriesOption } from '@/hooks/use-category';
-import { useDiseasesByCategoryOptions } from '@/hooks/use-disease';
-import { usePatientInfosOption } from '@/hooks/use-patient-info';
-import { useSeveritiesOptionList } from '@/hooks/useSeverity';
+import { useDropdownOptions } from '@/hooks/useDropdownOptions';
 import { HealthCase } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
@@ -45,16 +42,8 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
             severity_id: '',
         },
     });
-    const { watch } = form;
 
-    const selectedCategoryId = watch('category_id');
-
-    const { patient_infos, loading: loadingPatientInfos } = usePatientInfosOption(open);
-    const { categories, loading: loadingCategories } = useCategoriesOption(open);
-    const { diseases, loading: loadingDiseases } = useDiseasesByCategoryOptions(open ? selectedCategoryId : '');
-    const { data: severities, loading } = useSeveritiesOptionList();
-
-    const isDiseaseDisabled = !selectedCategoryId;
+    const { patient_infos, categories, severities, diseases, loading, selected } = useDropdownOptions(form);
 
     useEffect(() => {
         if (open) {
@@ -108,7 +97,7 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
                                             onValueChange={field.onChange}
                                             items={patient_infos}
                                             placeholder="Select a patient"
-                                            loading={loadingPatientInfos}
+                                            loading={loading.patient_infos}
                                             getLabel={(p) => `${p.last_name}, ${p.first_name} ${p.middle_name ?? ''} ${p.suffix?.name ?? ''}`}
                                             error={!!form.formState.errors.patient_info_id}
                                         />
@@ -130,7 +119,7 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
                                             onValueChange={field.onChange}
                                             items={categories}
                                             placeholder="Select a category"
-                                            loading={loadingCategories}
+                                            loading={loading.categories}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.category_id}
                                         />
@@ -152,10 +141,10 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
                                             onValueChange={field.onChange}
                                             items={diseases}
                                             placeholder="Select a disease"
-                                            loading={loadingDiseases}
+                                            loading={loading.diseases}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.disease_id}
-                                            disabled={isDiseaseDisabled}
+                                            disabled={!selected.categoryId}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -175,7 +164,7 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
                                             onValueChange={field.onChange}
                                             items={severities}
                                             placeholder="Select a severity"
-                                            loading={loading}
+                                            loading={loading.severities}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.severity_id}
                                         />

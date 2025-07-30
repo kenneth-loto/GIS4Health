@@ -1,5 +1,5 @@
-import { fetchCategoriesOption } from '@/api/category';
-import { fetchDiseasesByCategory } from '@/api/disease';
+import { fetchCategoriesOptionList } from '@/api/category';
+import { fetchDiseasesByCategoryOptionList } from '@/api/disease';
 import { fetchHealthCasesTableData } from '@/api/health_case';
 import { fetchSeveritiesOptionList } from '@/api/severity';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
@@ -82,7 +82,7 @@ export default function Index() {
                             accessor: 'category.name',
                             param: 'category_id',
                             fetchOptions: async () => {
-                                const data = await fetchCategoriesOption();
+                                const data = await fetchCategoriesOptionList();
                                 return data.map((category) => ({
                                     id: category.id,
                                     label: category.name,
@@ -97,7 +97,7 @@ export default function Index() {
                             fetchOptions: async (filters) => {
                                 const categoryId = filters?.category_id;
                                 if (!categoryId) return [];
-                                const data = await fetchDiseasesByCategory(categoryId);
+                                const data = await fetchDiseasesByCategoryOptionList(categoryId);
                                 return data.map((disease) => ({
                                     id: disease.id,
                                     label: disease.name,
