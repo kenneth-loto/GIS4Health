@@ -27,7 +27,7 @@ class UpdateSeverityRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('severities', 'name')->ignore($this->route('category')),
+                Rule::unique('severities', 'name')->ignore($this->route('severity')),
             ],
         ];
     }

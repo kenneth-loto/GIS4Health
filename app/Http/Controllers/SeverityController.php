@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Severity;
 use App\Http\Requests\StoreSeverityRequest;
 use App\Http\Requests\UpdateSeverityRequest;
+use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SeverityController extends Controller
@@ -30,8 +33,22 @@ class SeverityController extends Controller
      */
     public function store(StoreSeverityRequest $request)
     {
-        Severity::create($request->validated());
-        return redirect()->route('severities.index')->with('success', 'Severity added successfully');
+        try {
+            Severity::create($request->validated());
+
+            return redirect()->route('severities.index')
+                ->with('success', 'Severity added successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error storing severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to add severity. Please check your input or try again.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error storing severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while adding severity.');
+        }
     }
 
     /**
@@ -55,8 +72,22 @@ class SeverityController extends Controller
      */
     public function update(UpdateSeverityRequest $request, Severity $severity)
     {
-        $severity->update($request->validated());
-        return redirect()->route('severities.index')->with('success', 'Severity updated successfully');
+        try {
+            $severity->update($request->validated());
+
+            return redirect()->route('severities.index')
+                ->with('success', 'Severity updated successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error updating severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to update severity. Please check your input.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error updating severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while updating severity.');
+        }
     }
 
     /**
@@ -64,7 +95,21 @@ class SeverityController extends Controller
      */
     public function destroy(Severity $severity)
     {
-        $severity->delete();
-        return redirect()->route('severities.index')->with('success', 'Severity deleted successfully');
+        try {
+            $severity->delete();
+
+            return redirect()->route('severities.index')
+                ->with('success', 'Severity deleted successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error deleting severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Cannot delete severity. It may be in use.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error deleting severity: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while deleting severity.');
+        }
     }
 }

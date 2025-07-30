@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\PatientInfo;
 use App\Http\Requests\StorePatientInfoRequest;
 use App\Http\Requests\UpdatePatientInfoRequest;
+use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class PatientInfoController extends Controller
@@ -30,8 +33,22 @@ class PatientInfoController extends Controller
      */
     public function store(StorePatientInfoRequest $request)
     {
-        PatientInfo::create($request->validated());
-        return redirect()->route('patient_infos.index')->with('success', 'Patient Info added successfully');
+        try {
+            PatientInfo::create($request->validated());
+
+            return redirect()->route('patient_infos.index')
+                ->with('success', 'Patient info added successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error storing patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to add patient info. Please check your input or try again.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error storing patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while adding patient info.');
+        }
     }
 
     /**
@@ -55,8 +72,22 @@ class PatientInfoController extends Controller
      */
     public function update(UpdatePatientInfoRequest $request, PatientInfo $patientInfo)
     {
-        $patientInfo->update($request->validated());
-        return redirect()->route('patient_infos.index')->with('success', 'Patient Info updated successfully');
+        try {
+            $patientInfo->update($request->validated());
+
+            return redirect()->route('patient_infos.index')
+                ->with('success', 'Patient info updated successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error updating patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to update patient info. Please check your input.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error updating patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while updating patient info.');
+        }
     }
 
     /**
@@ -64,7 +95,21 @@ class PatientInfoController extends Controller
      */
     public function destroy(PatientInfo $patientInfo)
     {
-        $patientInfo->delete();
-        return redirect()->route('patient_infos.index')->with('success', 'Patient Info deleted successfully');
+        try {
+            $patientInfo->delete();
+
+            return redirect()->route('patient_infos.index')
+                ->with('success', 'Patient info deleted successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error deleting patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Cannot delete patient info. It may be in use.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error deleting patient info: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while deleting patient info.');
+        }
     }
 }

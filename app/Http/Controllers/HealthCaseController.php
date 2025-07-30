@@ -7,6 +7,10 @@ use App\Http\Requests\StoreHealthCaseRequest;
 use App\Http\Requests\UpdateHealthCaseRequest;
 use App\Models\PatientInfo;
 use Inertia\Inertia;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
+
 
 class HealthCaseController extends Controller
 {
@@ -31,8 +35,22 @@ class HealthCaseController extends Controller
      */
     public function store(StoreHealthCaseRequest $request)
     {
-        HealthCase::create($request->validated());
-        return redirect()->route('health_cases.index')->with('success', 'Health Case added successfully');
+        try {
+            HealthCase::create($request->validated());
+
+            return redirect()->route('health_cases.index')
+                ->with('success', 'Health case added successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error storing health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to add health case. Please check your input or try again.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error storing health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while adding health case.');
+        }
     }
 
     /** 
@@ -56,8 +74,22 @@ class HealthCaseController extends Controller
      */
     public function update(UpdateHealthCaseRequest $request, HealthCase $healthCase)
     {
-        $healthCase->update($request->validated());
-        return redirect()->route('health_cases.index')->with('success', 'Health Case updated successfully');
+        try {
+            $healthCase->update($request->validated());
+
+            return redirect()->route('health_cases.index')
+                ->with('success', 'Health case updated successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error updating health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Failed to update health case. Please check your input.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error updating health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while updating health case.');
+        }
     }
 
     /**
@@ -65,7 +97,21 @@ class HealthCaseController extends Controller
      */
     public function destroy(HealthCase $healthCase)
     {
-        $healthCase->delete();
-        return redirect()->route('health_cases.index')->with('success', 'Health Case deleted successfully');
+        try {
+            $healthCase->delete();
+
+            return redirect()->route('health_cases.index')
+                ->with('success', 'Health case deleted successfully');
+        } catch (QueryException $e) {
+            Log::error('Database error deleting health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Cannot delete health case. It may be in use.');
+        } catch (Exception $e) {
+            Log::error('Unexpected error deleting health case: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'An unexpected error occurred while deleting health case.');
+        }
     }
 }
