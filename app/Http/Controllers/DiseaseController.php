@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Disease;
 use App\Http\Requests\StoreDiseaseRequest;
 use App\Http\Requests\UpdateDiseaseRequest;
+use App\Support\SafeAction;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -22,50 +23,17 @@ class DiseaseController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreDiseaseRequest $request)
     {
-        try {
-            Disease::create($request->validated());
-
-            return redirect()->route('diseases.index')
-                ->with('success', 'Disease added successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error storing disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Failed to add disease. Please check your input or try again.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error storing disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while adding disease.');
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Disease $disease)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Disease $disease)
-    {
-        //
+        return SafeAction::run(
+            fn() => Disease::create($request->validated()),
+            'Disease added successfully.',
+            'Failed to add disease.',
+            route('diseases.index'),
+            'Could not save disease. It may already exist or contain invalid data.'
+        );
     }
 
     /**
@@ -73,22 +41,13 @@ class DiseaseController extends Controller
      */
     public function update(UpdateDiseaseRequest $request, Disease $disease)
     {
-        try {
-            $disease->update($request->validated());
-
-            return redirect()->route('diseases.index')
-                ->with('success', 'Disease updated successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error updating disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Failed to update disease. Please check your input.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error updating disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while updating disease.');
-        }
+        return SafeAction::run(
+            fn() => $disease->update($request->validated()),
+            'Disease updated successfully.',
+            'Failed to update disease.',
+            route('diseases.index'),
+            'Could not update disease. It may be in use or contain invalid data.'
+        );
     }
 
     /**
@@ -96,21 +55,12 @@ class DiseaseController extends Controller
      */
     public function destroy(Disease $disease)
     {
-        try {
-            $disease->delete();
-
-            return redirect()->route('diseases.index')
-                ->with('success', 'Disease deleted successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error deleting disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Cannot delete disease. It may be in use.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error deleting disease: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while deleting disease.');
-        }
+        return SafeAction::run(
+            fn() => $disease->delete(),
+            'Disease deleted successfully',
+            'Failed to delete disease.',
+            route('diseases.index'),
+            'Cannot delete disease. It may be in use.'
+        );
     }
 }

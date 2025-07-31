@@ -19,14 +19,6 @@ class SuffixController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreSuffixRequest $request)
@@ -38,22 +30,6 @@ class SuffixController extends Controller
             route('suffixes.index'),
             'Could not save suffix. It may already exist or contain invalid data.'
         );
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Suffix $suffix)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Suffix $suffix)
-    {
-        //
     }
 
     /**

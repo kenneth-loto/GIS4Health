@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PatientInfo;
 use App\Http\Requests\StorePatientInfoRequest;
 use App\Http\Requests\UpdatePatientInfoRequest;
+use App\Support\SafeAction;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
@@ -21,50 +22,17 @@ class PatientInfoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StorePatientInfoRequest $request)
     {
-        try {
-            PatientInfo::create($request->validated());
-
-            return redirect()->route('patient_infos.index')
-                ->with('success', 'Patient info added successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error storing patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Failed to add patient info. Please check your input or try again.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error storing patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while adding patient info.');
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(PatientInfo $patientInfo)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PatientInfo $patientInfo)
-    {
-        //
+        return SafeAction::run(
+            fn() => PatientInfo::create($request->validated()),
+            'Patient info added successfully.',
+            'Failed to add patient info.',
+            route('patient_infos.index'),
+            'Could not save patient info. It may already exist or contain invalid data.'
+        );
     }
 
     /**
@@ -72,22 +40,13 @@ class PatientInfoController extends Controller
      */
     public function update(UpdatePatientInfoRequest $request, PatientInfo $patientInfo)
     {
-        try {
-            $patientInfo->update($request->validated());
-
-            return redirect()->route('patient_infos.index')
-                ->with('success', 'Patient info updated successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error updating patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Failed to update patient info. Please check your input.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error updating patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while updating patient info.');
-        }
+        return SafeAction::run(
+            fn() => $patientInfo->update($request->validated()),
+            'Patient info updated successfully.',
+            'Failed to update patient info.',
+            route('patient_infos.index'),
+            'Could not update patient info. It may be in use or contain invalid data.'
+        );
     }
 
     /**
@@ -95,21 +54,12 @@ class PatientInfoController extends Controller
      */
     public function destroy(PatientInfo $patientInfo)
     {
-        try {
-            $patientInfo->delete();
-
-            return redirect()->route('patient_infos.index')
-                ->with('success', 'Patient info deleted successfully');
-        } catch (QueryException $e) {
-            Log::error('Database error deleting patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'Cannot delete patient info. It may be in use.');
-        } catch (Exception $e) {
-            Log::error('Unexpected error deleting patient info: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred while deleting patient info.');
-        }
+        return SafeAction::run(
+            fn() => $patientInfo->delete(),
+            'Patient info deleted successfully',
+            'Failed to delete patient info.',
+            route('patient_infos.index'),
+            'Cannot delete patient info. It may be in use.'
+        );
     }
 }

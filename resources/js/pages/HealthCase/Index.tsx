@@ -6,11 +6,10 @@ import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
 import { useCrudDialog } from '@/hooks/use-crud-dialog';
-import useToast from '@/hooks/use-toast';
+import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import { HealthCase, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
 import HealthCaseDialog from './HealthCaseDialog';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Health Cases', href: '/health_cases' }];
@@ -19,9 +18,7 @@ export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
         useCrudDialog<HealthCase>();
 
-    useToast(() => setTableKey((prev) => prev + 1));
-
-    const [tableKey, setTableKey] = useState(0);
+    const tableKey = useToastWithReload();
 
     const confirmDelete = () => {
         if (!data) return;
