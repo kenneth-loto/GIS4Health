@@ -19,7 +19,7 @@ class DiseaseController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Disease/Index');
+        return Inertia::render('Utilities/Disease/Index');
     }
 
     /**

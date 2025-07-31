@@ -18,7 +18,7 @@ class SeverityController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Severity/Index');
+        return Inertia::render('Utilities/Severity/Index');
     }
 
     /**

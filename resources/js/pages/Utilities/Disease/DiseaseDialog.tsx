@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ComboboxField } from '@/components/CustomComponents/Combobox';
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 
-import { useCategoriesOption } from '@/hooks/use-category';
+import { useCategoriesOptionList } from '@/hooks/useCategory';
 import { Disease } from '@/types';
 import { setServerErrors } from '@/utils/set-server-errors';
 
@@ -44,7 +44,7 @@ export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, 
         },
     });
 
-    const { categories, loading: loadingCategories } = useCategoriesOption(open);
+    const { data: categories, loading: loadingCategories } = useCategoriesOptionList();
 
     useEffect(() => {
         if (open) {

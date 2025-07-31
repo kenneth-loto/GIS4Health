@@ -1,29 +1,29 @@
-import { fetchSuffixesTableData } from '@/api/suffix';
+import { fetchCategoriesTableData } from '@/api/category';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
 import { useCrudDialog } from '@/hooks/use-crud-dialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
-import SuffixDialog from '@/pages/Suffix/SuffixDialog';
-import { Suffix, type BreadcrumbItem } from '@/types';
+import CategoryDialog from '@/pages/Utilities/Category/CategoryDialog';
+import { Category, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
-    { title: 'Suffixes', href: '/suffix' },
+    { title: 'Categories', href: '/categories' },
 ];
 
 export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Suffix>();
+        useCrudDialog<Category>();
 
     const tableKey = useToastWithReload();
 
     const confirmDelete = () => {
         if (!data) return;
         setDeleting(true);
-        router.delete(`/suffixes/${data.id}`, {
+        router.delete(`/categories/${data.id}`, {
             onFinish: () => {
                 setDeleting(false);
                 closeDelete();
@@ -33,7 +33,7 @@ export default function Index() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Suffixes" />
+            <Head title="Categories" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex justify-end">
                     <Button onClick={openAdd}>Add</Button>
@@ -41,13 +41,17 @@ export default function Index() {
 
                 <CustomTable
                     key={tableKey}
-                    columns={[{ label: 'Name', accessor: 'name' }]}
-                    fetchFn={fetchSuffixesTableData}
+                    columns={[
+                        { label: 'Name', accessor: 'name' },
+                        { label: 'Short Description', accessor: 'short_description' },
+                        { label: 'Diseases Count', accessor: 'disease_count' },
+                    ]}
+                    fetchFn={fetchCategoriesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
 
-                <SuffixDialog open={isOpen} onOpenChange={closeForm} suffix={data} isEditing={mode === 'edit'} />
+                <CategoryDialog open={isOpen} onOpenChange={closeForm} category={data} isEditing={mode === 'edit'} />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

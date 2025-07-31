@@ -1,29 +1,30 @@
-import { fetchSeveritiesTableData } from '@/api/severity';
+import { fetchCategoriesOptionList } from '@/api/category';
+import { fetchDiseasesTableData } from '@/api/disease';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
 import { useCrudDialog } from '@/hooks/use-crud-dialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
-import SeverityDialog from '@/pages/Severity/SeverityDialog';
-import { Severity, type BreadcrumbItem } from '@/types';
+import DiseaseDialog from '@/pages/Utilities/Disease/DiseaseDialog';
+import { Disease, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
-    { title: 'Severities', href: '/severities' },
+    { title: 'Diseases', href: '/diseases' },
 ];
 
 export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Severity>();
+        useCrudDialog<Disease>();
 
     const tableKey = useToastWithReload();
 
     const confirmDelete = () => {
         if (!data) return;
         setDeleting(true);
-        router.delete(`/severities/${data.id}`, {
+        router.delete(`/diseases/${data.id}`, {
             onFinish: () => {
                 setDeleting(false);
                 closeDelete();
@@ -33,7 +34,7 @@ export default function Index() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Severities" />
+            <Head title="Diseases" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex justify-end">
                     <Button onClick={openAdd}>Add</Button>
@@ -41,13 +42,31 @@ export default function Index() {
 
                 <CustomTable
                     key={tableKey}
-                    columns={[{ label: 'Name', accessor: 'name' }]}
-                    fetchFn={fetchSeveritiesTableData}
+                    columns={[
+                        { label: 'Name', accessor: 'name' },
+                        { label: 'Short Description', accessor: 'short_description' },
+                        { label: 'Category', accessor: 'category.name' },
+                    ]}
+                    fetchFn={fetchDiseasesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
+                    filters={[
+                        {
+                            label: 'Category',
+                            accessor: 'category.name',
+                            param: 'category_id',
+                            fetchOptions: async () => {
+                                const data = await fetchCategoriesOptionList();
+                                return data.map((category) => ({
+                                    id: category.id,
+                                    label: category.name,
+                                }));
+                            },
+                        },
+                    ]}
                 />
 
-                <SeverityDialog open={isOpen} onOpenChange={closeForm} severity={data} isEditing={mode === 'edit'} />
+                <DiseaseDialog open={isOpen} onOpenChange={closeForm} disease={data} isEditing={mode === 'edit'} modal={false} />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

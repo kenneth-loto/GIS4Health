@@ -1,29 +1,29 @@
-import { fetchCategoriesTableData } from '@/api/category';
+import { fetchSeveritiesTableData } from '@/api/severity';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
 import { useCrudDialog } from '@/hooks/use-crud-dialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
-import CategoryDialog from '@/pages/Category/CategoryDialog';
-import { Category, type BreadcrumbItem } from '@/types';
+import SeverityDialog from '@/pages/Utilities/Severity/SeverityDialog';
+import { Severity, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
-    { title: 'Categories', href: '/categories' },
+    { title: 'Severities', href: '/severities' },
 ];
 
 export default function Index() {
     const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Category>();
+        useCrudDialog<Severity>();
 
     const tableKey = useToastWithReload();
 
     const confirmDelete = () => {
         if (!data) return;
         setDeleting(true);
-        router.delete(`/categories/${data.id}`, {
+        router.delete(`/severities/${data.id}`, {
             onFinish: () => {
                 setDeleting(false);
                 closeDelete();
@@ -33,7 +33,7 @@ export default function Index() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Categories" />
+            <Head title="Severities" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex justify-end">
                     <Button onClick={openAdd}>Add</Button>
@@ -41,17 +41,13 @@ export default function Index() {
 
                 <CustomTable
                     key={tableKey}
-                    columns={[
-                        { label: 'Name', accessor: 'name' },
-                        { label: 'Short Description', accessor: 'short_description' },
-                        { label: 'Diseases Count', accessor: 'disease_count' },
-                    ]}
-                    fetchFn={fetchCategoriesTableData}
+                    columns={[{ label: 'Name', accessor: 'name' }]}
+                    fetchFn={fetchSeveritiesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
 
-                <CategoryDialog open={isOpen} onOpenChange={closeForm} category={data} isEditing={mode === 'edit'} />
+                <SeverityDialog open={isOpen} onOpenChange={closeForm} severity={data} isEditing={mode === 'edit'} />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

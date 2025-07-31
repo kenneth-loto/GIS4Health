@@ -15,7 +15,7 @@ class SuffixController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Suffix/Index');
+        return Inertia::render('Utilities/Suffix/Index');
     }
 
     /**
