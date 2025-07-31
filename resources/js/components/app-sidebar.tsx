@@ -4,7 +4,21 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { AudioWaveform, Biohazard, Building2, Cog, Droplets, Earth, FileStack, LayoutGrid, OctagonAlert, Stethoscope, UserPlus } from 'lucide-react';
+import {
+    AudioWaveform,
+    Biohazard,
+    Building2,
+    Cog,
+    ContactRound,
+    Droplets,
+    Earth,
+    FileStack,
+    LayoutGrid,
+    Map,
+    OctagonAlert,
+    Stethoscope,
+    UserRoundPlus,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -15,33 +29,43 @@ const mainNavItems: NavItem[] = [
     },
 
     {
-        title: 'HeatMap',
-        href: '/heatmap',
-        icon: Droplets,
+        title: 'Maps',
+        href: '/',
+        icon: Map,
+        isActive: true,
+        items: [
+            {
+                title: 'HeatMap',
+                href: '/heatmap',
+                icon: Droplets,
+            },
+
+            {
+                title: 'Choropleth',
+                href: '/choropleth',
+                icon: Earth,
+            },
+        ],
     },
 
     {
-        title: 'Choropleth',
-        href: '/choropleth',
-        icon: Earth,
-    },
+        title: 'Patients',
+        href: '/',
+        icon: ContactRound,
+        isActive: true,
+        items: [
+            {
+                title: 'Health Cases',
+                href: '/health_cases',
+                icon: Stethoscope,
+            },
 
-    {
-        title: 'Health Case',
-        href: '/health_cases',
-        icon: Stethoscope,
-    },
-
-    {
-        title: 'Patient Info',
-        href: '/patient_infos',
-        icon: UserPlus,
-    },
-
-    {
-        title: 'Diseases',
-        href: '/diseases',
-        icon: Biohazard,
+            {
+                title: 'Patient Infos',
+                href: '/patient_infos',
+                icon: UserRoundPlus,
+            },
+        ],
     },
 
     {
@@ -54,6 +78,12 @@ const mainNavItems: NavItem[] = [
                 title: 'Categories',
                 href: '/categories',
                 icon: FileStack,
+            },
+
+            {
+                title: 'Diseases',
+                href: '/diseases',
+                icon: Biohazard,
             },
 
             {
