@@ -47,7 +47,7 @@ export default function Filter({ filter, value, onChange, filters }: FilterProps
     };
 
     return (
-        <div className="w-full sm:w-1/6">
+        <div className="w-full">
             <Select
                 value={value ?? 'all'}
                 onValueChange={handleChange}

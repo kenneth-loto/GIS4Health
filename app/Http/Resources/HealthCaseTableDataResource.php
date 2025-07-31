@@ -25,6 +25,15 @@ class HealthCaseTableDataResource extends JsonResource
                     'id' => $this->patient_info->suffix->id ?? null,
                     'name' => $this->patient_info->suffix->name ?? null,
                 ],
+                'municipality' => [
+                    'id' => $this->patient_info->municipality->id ?? null,
+                    'name' => $this->patient_info->municipality->name ?? null,
+                ],
+                'barangay' => [
+                    'id' => $this->patient_info->barangay->id ?? null,
+                    'name' => $this->patient_info->barangay->name ?? null,
+                ],
+                'street' => $this->patient_info->street,
             ],
             'category' => [
                 'id' => $this->category->id ?? null,

@@ -1,6 +1,8 @@
+import { fetchBarangaysByMunicipalityOptionList } from '@/api/barangay';
 import { fetchCategoriesOptionList } from '@/api/category';
 import { fetchDiseasesByCategoryOptionList } from '@/api/disease';
 import { fetchHealthCasesTableData } from '@/api/health_case';
+import { fetchMunicipalitiesOptionList } from '@/api/municipality';
 import { fetchSeveritiesOptionList } from '@/api/severity';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
@@ -45,6 +47,13 @@ export default function Index() {
             },
         },
         {
+            label: 'Address',
+            accessor: (row: HealthCase) => {
+                const parts = [row.patient_info.street || '', row.patient_info.barangay.name, row.patient_info.municipality.name].filter(Boolean);
+                return parts.join(', ');
+            },
+        },
+        {
             label: 'Category',
             accessor: (row: HealthCase) => row.category?.name ?? '',
         },
@@ -74,6 +83,33 @@ export default function Index() {
                     onEdit={openEdit}
                     onDelete={openDelete}
                     filters={[
+                        {
+                            label: 'Municipality',
+                            accessor: 'patient_info.municipality.name',
+                            param: 'municipality_id',
+                            fetchOptions: async () => {
+                                const data = await fetchMunicipalitiesOptionList();
+                                return data.map((municipality) => ({
+                                    id: municipality.id,
+                                    label: municipality.name,
+                                }));
+                            },
+                        },
+                        {
+                            label: 'Barangay',
+                            accessor: 'patient_info.barangay.name',
+                            param: 'barangay_id',
+                            dependsOn: 'municipality_id',
+                            fetchOptions: async (filters) => {
+                                const municipalityId = filters?.municipality_id;
+                                if (!municipalityId) return [];
+                                const data = await fetchBarangaysByMunicipalityOptionList(municipalityId);
+                                return data.map((barangay) => ({
+                                    id: barangay.id,
+                                    label: barangay.name,
+                                }));
+                            },
+                        },
                         {
                             label: 'Category',
                             accessor: 'category.name',

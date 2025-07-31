@@ -33,6 +33,8 @@ type Props = {
 };
 
 export default function HealthCaseDialog({ open, onOpenChange, health_case, isEditing, modal = true }: Props) {
+    if (!open) return null;
+
     const form = useForm<HealthCaseFormValues>({
         resolver: zodResolver(healthCaseSchema),
         defaultValues: {

@@ -9,6 +9,15 @@ export type HealthCase = {
             id: string;
             name: string;
         };
+        municipality: {
+            id: string;
+            name: string;
+        };
+        barangay: {
+            id: string;
+            name: string;
+        };
+        street: string;
     };
     category: {
         id: string;

@@ -181,12 +181,13 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                             key={filter.param}
                             filter={filter}
                             value={String(state.filters[filter.param] ?? 'all')}
-                            onChange={(val) =>
+                            onChange={(val) => {
                                 dispatch({
                                     type: 'SET_FILTER',
                                     payload: { key: filter.param, value: val },
-                                })
-                            }
+                                });
+                                dispatch({ type: 'SET_PAGE', payload: 1 });
+                            }}
                             filters={state.filters}
                         />
                     ))}
