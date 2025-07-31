@@ -12,34 +12,35 @@ interface FilterProps {
 export default function Filter({ filter, value, onChange, filters }: FilterProps) {
     const [options, setOptions] = useState<{ id: string; label: string }[]>([]);
     const [loading, setLoading] = useState(false);
+    const [fetched, setFetched] = useState(false);
 
     useEffect(() => {
-        let active = true;
+        if (filter.dependsOn) {
+            setFetched(false);
+            setOptions([]);
+            if (value !== undefined) {
+                onChange(undefined);
+            }
+        }
+    }, [filter.dependsOn ? filters[filter.dependsOn] : null]);
+
+    const loadOptions = async () => {
+        if (fetched) return;
         setLoading(true);
-
-        filter
-            .fetchOptions(filters)
-            .then((res) => {
-                if (!active) return;
-
-                setOptions(res);
-
-                const isValid = res.some((opt) => String(opt.id) === String(value));
-                if (value && !isValid) {
-                    onChange(undefined);
-                }
-            })
-            .catch(() => {
-                if (active) setOptions([]);
-            })
-            .finally(() => {
-                if (active) setLoading(false);
-            });
-
-        return () => {
-            active = false;
-        };
-    }, [filter.param, filter.dependsOn ? filters[filter.dependsOn] : null, filter.fetchOptions]);
+        try {
+            const res = await filter.fetchOptions(filters);
+            setOptions(res);
+            const isValid = res.some((opt) => String(opt.id) === String(value));
+            if (value && !isValid) {
+                onChange(undefined);
+            }
+        } catch {
+            setOptions([]);
+        } finally {
+            setLoading(false);
+            setFetched(true);
+        }
+    };
 
     const handleChange = (val: string) => {
         onChange(val === 'all' ? undefined : val);
@@ -47,7 +48,13 @@ export default function Filter({ filter, value, onChange, filters }: FilterProps
 
     return (
         <div className="w-full sm:w-1/6">
-            <Select value={value ?? 'all'} onValueChange={handleChange}>
+            <Select
+                value={value ?? 'all'}
+                onValueChange={handleChange}
+                onOpenChange={(open) => {
+                    if (open) loadOptions();
+                }}
+            >
                 <SelectTrigger>
                     <SelectValue placeholder={`Filter by ${filter.label}`} />
                 </SelectTrigger>
