@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useDebounce } from '@/hooks/use-debounce';
-import { useTableReducer } from '@/hooks/use-table-reducer';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useTableReducer } from '@/hooks/useTableReducer';
 import { FilterConfig } from '@/types';
 import { Edit, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';

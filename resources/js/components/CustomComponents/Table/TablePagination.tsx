@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { TableAction } from '@/hooks/use-table-reducer';
+import { TableAction } from '@/hooks/useTableReducer';
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 interface TablePaginationProps<T> {

@@ -2,7 +2,7 @@ import { fetchCategoriesTableData } from '@/api/category';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
-import { useCrudDialog } from '@/hooks/use-crud-dialog';
+import { useCrudDialog } from '@/hooks/useCrudDialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import CategoryDialog from '@/pages/Utilities/Category/CategoryDialog';
