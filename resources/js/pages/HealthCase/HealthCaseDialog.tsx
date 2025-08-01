@@ -45,7 +45,9 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
         },
     });
 
-    const { patient_infos, categories, severities, diseases, loading, selected } = useDropdownOptions(form);
+    const { patient_infos, categories, severities, diseases, loading, selected } = useDropdownOptions(form, {
+        include: ['patient_infos', 'categories', 'severities', 'diseases'],
+    });
 
     useEffect(() => {
         if (open) {

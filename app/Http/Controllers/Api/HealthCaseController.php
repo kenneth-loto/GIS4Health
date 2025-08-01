@@ -17,8 +17,7 @@ class HealthCaseController extends Controller
         $this->applySearchFilter($query, $request->input('search'));
         $this->applyDirectFilters($query, $request);
 
-        $healthCases = $query
-            ->paginate($request->input('per_page', 5))
+        $healthCases = $query->paginate($request->input('per_page', 5))
             ->appends($request->only([
                 'search',
                 'per_page',
@@ -26,7 +25,7 @@ class HealthCaseController extends Controller
                 'disease_id',
                 'severity_id',
                 'municipality_id',
-                'barangay_id'
+                'barangay_id',
             ]));
 
         return ApiResponse::table($healthCases, HealthCaseTableDataResource::class);
@@ -38,16 +37,20 @@ class HealthCaseController extends Controller
             ->join('patient_infos', 'health_cases.patient_info_id', '=', 'patient_infos.id')
             ->select('health_cases.*')
             ->with([
-                'patient_info:id,first_name,middle_name,last_name,suffix_id,municipality_id,barangay_id,street',
-                'patient_info.suffix:id,name',
-                'patient_info.municipality:id,name',
-                'patient_info.barangay:id,name',
                 'category:id,name',
                 'disease:id,name',
                 'severity:id,name',
+                'patient_info' => fn($q) => $q
+                    ->select('id', 'first_name', 'middle_name', 'last_name', 'suffix_id', 'municipality_id', 'barangay_id', 'street')
+                    ->with([
+                        'suffix:id,name',
+                        'municipality:id,name',
+                        'barangay:id,name',
+                    ]),
             ])
             ->orderBy('patient_infos.last_name');
     }
+
 
     protected function applySearchFilter($query, $search)
     {
@@ -81,15 +84,18 @@ class HealthCaseController extends Controller
 
     protected function applyDirectFilters($query, Request $request)
     {
-        collect([
+        $filters = [
             'category_id' => 'health_cases.category_id',
             'disease_id' => 'health_cases.disease_id',
             'severity_id' => 'health_cases.severity_id',
             'municipality_id' => 'patient_infos.municipality_id',
             'barangay_id' => 'patient_infos.barangay_id',
-        ])->each(function ($column, $filter) use ($request, $query) {
-            $request->whenFilled($filter, fn($value) =>
-                $query->where($column, $value));
-        });
+        ];
+
+        foreach ($filters as $filter => $column) {
+            if ($request->filled($filter)) {
+                $query->where($column, $request->input($filter));
+            }
+        }
     }
 }
