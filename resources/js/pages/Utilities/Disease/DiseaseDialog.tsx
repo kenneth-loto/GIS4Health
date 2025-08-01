@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,9 +13,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { ComboboxField } from '@/components/CustomComponents/Combobox';
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 
-import { useCategoriesOptionList } from '@/hooks/useCategory';
+import { useDropdownOptions } from '@/hooks/useDropdownOptions';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { Disease } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 
 const diseaseSchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -26,15 +26,11 @@ const diseaseSchema = z.object({
 
 type DiseaseFormValues = z.infer<typeof diseaseSchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    disease: Disease | null;
-    isEditing: boolean;
-    modal: boolean;
-};
+type Props = FormDialogProps<Disease>;
 
-export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, modal = true }: Props) {
+export default function DiseaseDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting, modal = true }: Props) {
+    if (!open) return null;
+
     const form = useForm<DiseaseFormValues>({
         resolver: zodResolver(diseaseSchema),
         defaultValues: {
@@ -44,35 +40,29 @@ export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, 
         },
     });
 
-    const { data: categories, loading: loadingCategories } = useCategoriesOptionList();
+    const { categories, loading, selected } = useDropdownOptions(form, {
+        include: ['categories'],
+    });
 
     useEffect(() => {
         if (open) {
             form.reset({
-                name: disease?.name || '',
-                short_description: disease?.short_description || '',
-                category_id: disease?.category.id || '',
+                name: initialValue?.name || '',
+                short_description: initialValue?.short_description || '',
+                category_id: initialValue?.category.id || '',
             });
             form.clearErrors();
         }
-    }, [open, disease]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: DiseaseFormValues) => {
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && disease) {
-            router.put(`/diseases/${disease.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/diseases', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<DiseaseFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'diseases',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal={modal}>
@@ -135,7 +125,7 @@ export default function DiseaseDialog({ open, onOpenChange, disease, isEditing, 
                                             onValueChange={field.onChange}
                                             items={categories}
                                             placeholder="Select a category"
-                                            loading={loadingCategories}
+                                            loading={loading}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.category_id}
                                         />

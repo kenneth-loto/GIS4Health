@@ -1,17 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/CustomComponents/Dialog';
+import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-
-import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { Category } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 
 const categorySchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -20,14 +19,9 @@ const categorySchema = z.object({
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    category: Category | null;
-    isEditing: boolean;
-};
+type Props = FormDialogProps<Category>;
 
-export default function CategoryDialog({ open, onOpenChange, category, isEditing }: Props) {
+export default function CategoryDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting }: Props) {
     const form = useForm<CategoryFormValues>({
         resolver: zodResolver(categorySchema),
         defaultValues: {
@@ -39,32 +33,29 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
     useEffect(() => {
         if (open) {
             form.reset({
-                name: category?.name || '',
-                short_description: category?.short_description || '',
+                name: initialValue?.name || '',
+                short_description: initialValue?.short_description || '',
             });
             form.clearErrors();
         }
-    }, [open, category]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: CategoryFormValues) => {
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && category) {
-            router.put(`/categories/${category.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/categories', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<CategoryFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'categories',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog
+            open={open}
+            onOpenChange={(nextOpen) => {
+                if (!isSubmitting) onOpenChange(nextOpen);
+            }}
+        >
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>{isEditing ? 'Edit Category' : 'Add Category'}</DialogTitle>
@@ -98,6 +89,13 @@ export default function CategoryDialog({ open, onOpenChange, category, isEditing
                                             placeholder="e.g. Diseases caused by contaminated water sources, such as cholera and typhoid."
                                             className="h-24 resize-none overflow-y-auto"
                                             {...field}
+                                            aria-label="Short Description"
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                    form.handleSubmit(onSubmit)();
+                                                }
+                                            }}
                                         />
                                     </FormControl>
                                     <FormMessage />

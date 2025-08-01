@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,8 +8,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { Severity } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 
 const severitySchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -18,14 +18,9 @@ const severitySchema = z.object({
 
 type SeverityFormValues = z.infer<typeof severitySchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    severity: Severity | null;
-    isEditing: boolean;
-};
+type Props = FormDialogProps<Severity>;
 
-export default function SeverityDialog({ open, onOpenChange, severity, isEditing }: Props) {
+export default function SeverityDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting }: Props) {
     const form = useForm<SeverityFormValues>({
         resolver: zodResolver(severitySchema),
         defaultValues: {
@@ -36,28 +31,20 @@ export default function SeverityDialog({ open, onOpenChange, severity, isEditing
     useEffect(() => {
         if (open) {
             form.reset({
-                name: severity?.name || '',
+                name: initialValue?.name || '',
             });
             form.clearErrors();
         }
-    }, [open, severity]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: SeverityFormValues) => {
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && severity) {
-            router.put(`/severities/${severity.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/severities', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<SeverityFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'severities',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>

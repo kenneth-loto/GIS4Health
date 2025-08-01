@@ -9,18 +9,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Municipalities', href: '/municipalities' },
 ];
 
+const columns = [
+    { label: 'Code', accessor: 'code' },
+    { label: 'Name', accessor: 'name' },
+];
+
 export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Municipalities" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <CustomTable
-                    columns={[
-                        { label: 'Code', accessor: 'code' },
-                        { label: 'Name', accessor: 'name' },
-                    ]}
-                    fetchFn={fetchMunicipalitiesTableData}
-                />
+                <CustomTable columns={columns} fetchFn={fetchMunicipalitiesTableData} />
             </div>
         </AppLayout>
     );

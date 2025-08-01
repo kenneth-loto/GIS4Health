@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -12,8 +11,9 @@ import { ComboboxField } from '@/components/CustomComponents/Combobox';
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 
 import { useDropdownOptions } from '@/hooks/useDropdownOptions';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { HealthCase } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 
 const healthCaseSchema = z.object({
     patient_info_id: z.string().min(1, 'Patient is required'),
@@ -24,15 +24,9 @@ const healthCaseSchema = z.object({
 
 type HealthCaseFormValues = z.infer<typeof healthCaseSchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    health_case: HealthCase | null;
-    isEditing: boolean;
-    modal: boolean;
-};
+type Props = FormDialogProps<HealthCase>;
 
-export default function HealthCaseDialog({ open, onOpenChange, health_case, isEditing, modal = true }: Props) {
+export default function HealthCaseDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting, modal = true }: Props) {
     if (!open) return null;
 
     const form = useForm<HealthCaseFormValues>({
@@ -52,32 +46,23 @@ export default function HealthCaseDialog({ open, onOpenChange, health_case, isEd
     useEffect(() => {
         if (open) {
             form.reset({
-                patient_info_id: health_case?.patient_info.id || '',
-                category_id: health_case?.category.id || '',
-                disease_id: health_case?.disease.id || '',
-                severity_id: health_case?.severity.id || '',
+                patient_info_id: initialValue?.patient_info.id || '',
+                category_id: initialValue?.category.id || '',
+                disease_id: initialValue?.disease.id || '',
+                severity_id: initialValue?.severity.id || '',
             });
             form.clearErrors();
         }
-    }, [open, health_case]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: HealthCaseFormValues) => {
-        console.log(values);
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && health_case) {
-            router.put(`/health_cases/${health_case.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/health_cases', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<HealthCaseFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'health_cases',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal={modal}>

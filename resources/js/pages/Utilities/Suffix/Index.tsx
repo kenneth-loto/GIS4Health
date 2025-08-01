@@ -2,12 +2,13 @@ import { fetchSuffixesTableData } from '@/api/suffix';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
+import { useConfirmDelete } from '@/hooks/useConfirmDelete';
 import { useCrudDialog } from '@/hooks/useCrudDialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import SuffixDialog from '@/pages/Utilities/Suffix/SuffixDialog';
 import { Suffix, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
@@ -15,21 +16,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index() {
-    const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Suffix>();
+    const {
+        isOpen,
+        mode,
+        data,
+        isDeleteOpen,
+        isDeleting,
+        isSubmitting,
+        openAdd,
+        openEdit,
+        closeForm,
+        openDelete,
+        closeDelete,
+        setDeleting,
+        setSubmitting,
+    } = useCrudDialog<Suffix>();
 
     const tableKey = useToastWithReload();
 
-    const confirmDelete = () => {
-        if (!data) return;
-        setDeleting(true);
-        router.delete(`/suffixes/${data.id}`, {
-            onFinish: () => {
-                setDeleting(false);
-                closeDelete();
-            },
-        });
-    };
+    const confirmDelete = useConfirmDelete(data, 'suffixes', setDeleting, closeDelete);
+
+    const column = [{ label: 'Name', accessor: 'name' }];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -39,15 +46,18 @@ export default function Index() {
                     <Button onClick={openAdd}>Add</Button>
                 </div>
 
-                <CustomTable
-                    key={tableKey}
-                    columns={[{ label: 'Name', accessor: 'name' }]}
-                    fetchFn={fetchSuffixesTableData}
-                    onEdit={openEdit}
-                    onDelete={openDelete}
-                />
+                <CustomTable key={tableKey} columns={column} fetchFn={fetchSuffixesTableData} onEdit={openEdit} onDelete={openDelete} />
 
-                <SuffixDialog open={isOpen} onOpenChange={closeForm} suffix={data} isEditing={mode === 'edit'} />
+                <SuffixDialog
+                    open={isOpen}
+                    onOpenChange={(open) => {
+                        if (!isSubmitting && !open) closeForm();
+                    }}
+                    initialValue={data}
+                    isEditing={mode === 'edit'}
+                    isSubmitting={isSubmitting}
+                    setSubmitting={setSubmitting}
+                />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

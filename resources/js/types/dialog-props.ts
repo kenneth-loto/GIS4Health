@@ -5,4 +5,5 @@ export interface FormDialogProps<T> {
     isEditing: boolean;
     isSubmitting: boolean;
     setSubmitting: (val: boolean) => void;
+    modal?: boolean;
 }

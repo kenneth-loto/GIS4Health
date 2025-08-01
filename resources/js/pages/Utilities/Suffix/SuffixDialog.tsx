@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,8 +8,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { Suffix } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 
 const suffixSchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -18,14 +18,9 @@ const suffixSchema = z.object({
 
 type SuffixFormValues = z.infer<typeof suffixSchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    suffix: Suffix | null;
-    isEditing: boolean;
-};
+type Props = FormDialogProps<Suffix>;
 
-export default function SuffixDialog({ open, onOpenChange, suffix, isEditing }: Props) {
+export default function SuffixDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting }: Props) {
     const form = useForm<SuffixFormValues>({
         resolver: zodResolver(suffixSchema),
         defaultValues: {
@@ -36,28 +31,20 @@ export default function SuffixDialog({ open, onOpenChange, suffix, isEditing }: 
     useEffect(() => {
         if (open) {
             form.reset({
-                name: suffix?.name || '',
+                name: initialValue?.name || '',
             });
             form.clearErrors();
         }
-    }, [open, suffix]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: SuffixFormValues) => {
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && suffix) {
-            router.put(`/suffixes/${suffix.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/suffixes', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<SuffixFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'suffixes',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>

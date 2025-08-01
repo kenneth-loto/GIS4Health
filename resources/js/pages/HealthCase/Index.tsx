@@ -7,31 +7,37 @@ import { fetchSeveritiesOptionList } from '@/api/severity';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
+import { useConfirmDelete } from '@/hooks/useConfirmDelete';
 import { useCrudDialog } from '@/hooks/useCrudDialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import { HealthCase, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { FilterOptions } from '@/types/filter-options';
+import { Head } from '@inertiajs/react';
 import HealthCaseDialog from './HealthCaseDialog';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Health Cases', href: '/health_cases' }];
 
 export default function Index() {
-    const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<HealthCase>();
+    const {
+        isOpen,
+        mode,
+        data,
+        isDeleteOpen,
+        isDeleting,
+        isSubmitting,
+        openAdd,
+        openEdit,
+        closeForm,
+        openDelete,
+        closeDelete,
+        setDeleting,
+        setSubmitting,
+    } = useCrudDialog<HealthCase>();
 
     const tableKey = useToastWithReload();
 
-    const confirmDelete = () => {
-        if (!data) return;
-        setDeleting(true);
-        router.delete(`/health_cases/${data.id}`, {
-            onFinish: () => {
-                setDeleting(false);
-                closeDelete();
-            },
-        });
-    };
+    const confirmDelete = useConfirmDelete(data, 'health_cases', setDeleting, closeDelete);
 
     const columns = [
         {
@@ -67,6 +73,75 @@ export default function Index() {
         },
     ];
 
+    const filters = [
+        {
+            label: 'Municipality',
+            accessor: 'patient_info.municipality.name',
+            param: 'municipality_id',
+            fetchOptions: async () => {
+                const data = await fetchMunicipalitiesOptionList();
+                return data.map((municipality) => ({
+                    id: municipality.id,
+                    label: municipality.name,
+                }));
+            },
+        },
+        {
+            label: 'Barangay',
+            accessor: 'patient_info.barangay.name',
+            param: 'barangay_id',
+            dependsOn: 'municipality_id',
+            fetchOptions: async (filters?: FilterOptions) => {
+                const municipalityId = filters?.municipality_id;
+                if (!municipalityId) return [];
+                const data = await fetchBarangaysByMunicipalityOptionList(municipalityId);
+                return data.map((barangay) => ({
+                    id: barangay.id,
+                    label: barangay.name,
+                }));
+            },
+        },
+        {
+            label: 'Category',
+            accessor: 'category.name',
+            param: 'category_id',
+            fetchOptions: async () => {
+                const data = await fetchCategoriesOptionList();
+                return data.map((category) => ({
+                    id: category.id,
+                    label: category.name,
+                }));
+            },
+        },
+        {
+            label: 'Disease',
+            accessor: 'disease.name',
+            param: 'disease_id',
+            dependsOn: 'category_id',
+            fetchOptions: async (filters?: FilterOptions) => {
+                const categoryId = filters?.category_id;
+                if (!categoryId) return [];
+                const data = await fetchDiseasesByCategoryOptionList(categoryId);
+                return data.map((disease) => ({
+                    id: disease.id,
+                    label: disease.name,
+                }));
+            },
+        },
+        {
+            label: 'Severity',
+            accessor: 'severity.name',
+            param: 'severity_id',
+            fetchOptions: async () => {
+                const data = await fetchSeveritiesOptionList();
+                return data.map((severity) => ({
+                    id: severity.id,
+                    label: severity.name,
+                }));
+            },
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Health Cases" />
@@ -82,77 +157,20 @@ export default function Index() {
                     fetchFn={fetchHealthCasesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
-                    filters={[
-                        {
-                            label: 'Municipality',
-                            accessor: 'patient_info.municipality.name',
-                            param: 'municipality_id',
-                            fetchOptions: async () => {
-                                const data = await fetchMunicipalitiesOptionList();
-                                return data.map((municipality) => ({
-                                    id: municipality.id,
-                                    label: municipality.name,
-                                }));
-                            },
-                        },
-                        {
-                            label: 'Barangay',
-                            accessor: 'patient_info.barangay.name',
-                            param: 'barangay_id',
-                            dependsOn: 'municipality_id',
-                            fetchOptions: async (filters) => {
-                                const municipalityId = filters?.municipality_id;
-                                if (!municipalityId) return [];
-                                const data = await fetchBarangaysByMunicipalityOptionList(municipalityId);
-                                return data.map((barangay) => ({
-                                    id: barangay.id,
-                                    label: barangay.name,
-                                }));
-                            },
-                        },
-                        {
-                            label: 'Category',
-                            accessor: 'category.name',
-                            param: 'category_id',
-                            fetchOptions: async () => {
-                                const data = await fetchCategoriesOptionList();
-                                return data.map((category) => ({
-                                    id: category.id,
-                                    label: category.name,
-                                }));
-                            },
-                        },
-                        {
-                            label: 'Disease',
-                            accessor: 'disease.name',
-                            param: 'disease_id',
-                            dependsOn: 'category_id',
-                            fetchOptions: async (filters) => {
-                                const categoryId = filters?.category_id;
-                                if (!categoryId) return [];
-                                const data = await fetchDiseasesByCategoryOptionList(categoryId);
-                                return data.map((disease) => ({
-                                    id: disease.id,
-                                    label: disease.name,
-                                }));
-                            },
-                        },
-                        {
-                            label: 'Severity',
-                            accessor: 'severity.name',
-                            param: 'severity_id',
-                            fetchOptions: async () => {
-                                const data = await fetchSeveritiesOptionList();
-                                return data.map((severity) => ({
-                                    id: severity.id,
-                                    label: severity.name,
-                                }));
-                            },
-                        },
-                    ]}
+                    filters={filters}
                 />
 
-                <HealthCaseDialog open={isOpen} onOpenChange={closeForm} health_case={data} isEditing={mode === 'edit'} modal={false} />
+                <HealthCaseDialog
+                    open={isOpen}
+                    onOpenChange={(open) => {
+                        if (!isSubmitting && !open) closeForm();
+                    }}
+                    initialValue={data}
+                    isEditing={mode === 'edit'}
+                    isSubmitting={isSubmitting}
+                    setSubmitting={setSubmitting}
+                    modal={false}
+                />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

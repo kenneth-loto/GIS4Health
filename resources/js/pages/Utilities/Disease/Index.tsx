@@ -3,12 +3,13 @@ import { fetchDiseasesTableData } from '@/api/disease';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
+import { useConfirmDelete } from '@/hooks/useConfirmDelete';
 import { useCrudDialog } from '@/hooks/useCrudDialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import DiseaseDialog from '@/pages/Utilities/Disease/DiseaseDialog';
 import { Disease, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
@@ -16,21 +17,46 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index() {
-    const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Disease>();
+    const {
+        isOpen,
+        mode,
+        data,
+        isDeleteOpen,
+        isDeleting,
+        isSubmitting,
+        openAdd,
+        openEdit,
+        closeForm,
+        openDelete,
+        closeDelete,
+        setDeleting,
+        setSubmitting,
+    } = useCrudDialog<Disease>();
 
     const tableKey = useToastWithReload();
 
-    const confirmDelete = () => {
-        if (!data) return;
-        setDeleting(true);
-        router.delete(`/diseases/${data.id}`, {
-            onFinish: () => {
-                setDeleting(false);
-                closeDelete();
+    const confirmDelete = useConfirmDelete(data, 'diseases', setDeleting, closeDelete);
+
+    const columns = [
+        { label: 'Name', accessor: 'name' },
+        { label: 'Short Description', accessor: 'short_description' },
+        { label: 'Category', accessor: 'category.name' },
+    ];
+
+    const filters = [
+        {
+            label: 'Category',
+            accessor: 'category.name',
+            param: 'category_id',
+            fetchOptions: async () => {
+                const data = await fetchCategoriesOptionList();
+                return data.map((category) => ({
+                    id: category.id,
+                    label: category.name,
+                }));
             },
-        });
-    };
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -42,31 +68,24 @@ export default function Index() {
 
                 <CustomTable
                     key={tableKey}
-                    columns={[
-                        { label: 'Name', accessor: 'name' },
-                        { label: 'Short Description', accessor: 'short_description' },
-                        { label: 'Category', accessor: 'category.name' },
-                    ]}
+                    columns={columns}
                     fetchFn={fetchDiseasesTableData}
                     onEdit={openEdit}
                     onDelete={openDelete}
-                    filters={[
-                        {
-                            label: 'Category',
-                            accessor: 'category.name',
-                            param: 'category_id',
-                            fetchOptions: async () => {
-                                const data = await fetchCategoriesOptionList();
-                                return data.map((category) => ({
-                                    id: category.id,
-                                    label: category.name,
-                                }));
-                            },
-                        },
-                    ]}
+                    filters={filters}
                 />
 
-                <DiseaseDialog open={isOpen} onOpenChange={closeForm} disease={data} isEditing={mode === 'edit'} modal={false} />
+                <DiseaseDialog
+                    open={isOpen}
+                    onOpenChange={(open) => {
+                        if (!isSubmitting && !open) closeForm();
+                    }}
+                    initialValue={data}
+                    isEditing={mode === 'edit'}
+                    isSubmitting={isSubmitting}
+                    setSubmitting={setSubmitting}
+                    modal={false}
+                />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>

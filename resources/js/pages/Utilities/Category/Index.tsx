@@ -2,12 +2,13 @@ import { fetchCategoriesTableData } from '@/api/category';
 import DeleteDialog from '@/components/CustomComponents/DeleteDialog';
 import { CustomTable } from '@/components/CustomComponents/Table';
 import { Button } from '@/components/ui/button';
+import { useConfirmDelete } from '@/hooks/useConfirmDelete';
 import { useCrudDialog } from '@/hooks/useCrudDialog';
 import { useToastWithReload } from '@/hooks/useToast';
 import AppLayout from '@/layouts/app-layout';
 import CategoryDialog from '@/pages/Utilities/Category/CategoryDialog';
 import { Category, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Utilities', href: '' },
@@ -15,21 +16,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index() {
-    const { isOpen, mode, data, isDeleteOpen, isDeleting, openAdd, openEdit, closeForm, openDelete, closeDelete, setDeleting } =
-        useCrudDialog<Category>();
+    const {
+        isOpen,
+        mode,
+        data,
+        isDeleteOpen,
+        isDeleting,
+        isSubmitting,
+        openAdd,
+        openEdit,
+        closeForm,
+        openDelete,
+        closeDelete,
+        setDeleting,
+        setSubmitting,
+    } = useCrudDialog<Category>();
 
     const tableKey = useToastWithReload();
 
-    const confirmDelete = () => {
-        if (!data) return;
-        setDeleting(true);
-        router.delete(`/categories/${data.id}`, {
-            onFinish: () => {
-                setDeleting(false);
-                closeDelete();
-            },
-        });
-    };
+    const confirmDelete = useConfirmDelete(data, 'categories', setDeleting, closeDelete);
+
+    const columns = [
+        { label: 'Name', accessor: 'name' },
+        { label: 'Short Description', accessor: 'short_description' },
+        { label: 'Diseases Count', accessor: 'disease_count' },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -39,19 +50,18 @@ export default function Index() {
                     <Button onClick={openAdd}>Add</Button>
                 </div>
 
-                <CustomTable
-                    key={tableKey}
-                    columns={[
-                        { label: 'Name', accessor: 'name' },
-                        { label: 'Short Description', accessor: 'short_description' },
-                        { label: 'Diseases Count', accessor: 'disease_count' },
-                    ]}
-                    fetchFn={fetchCategoriesTableData}
-                    onEdit={openEdit}
-                    onDelete={openDelete}
-                />
+                <CustomTable key={tableKey} columns={columns} fetchFn={fetchCategoriesTableData} onEdit={openEdit} onDelete={openDelete} />
 
-                <CategoryDialog open={isOpen} onOpenChange={closeForm} category={data} isEditing={mode === 'edit'} />
+                <CategoryDialog
+                    open={isOpen}
+                    onOpenChange={(open) => {
+                        if (!isSubmitting && !open) closeForm();
+                    }}
+                    initialValue={data}
+                    isEditing={mode === 'edit'}
+                    isSubmitting={isSubmitting}
+                    setSubmitting={setSubmitting}
+                />
 
                 <DeleteDialog open={isDeleteOpen} onCancel={closeDelete} onConfirm={confirmDelete} isLoading={isDeleting} />
             </div>
