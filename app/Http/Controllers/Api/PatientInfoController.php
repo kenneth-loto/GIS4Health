@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PatientInfoOptionResource;
+use App\Http\Resources\PatientInfoOptionListResource;
 use App\Http\Resources\PatientInfoTableDataResource;
 use App\Models\PatientInfo;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class PatientInfoController extends Controller
 {
     public function list()
     {
-        return PatientInfoOptionResource::collection(
+        return PatientInfoOptionListResource::collection(
             PatientInfo::orderBy('last_name')->get()
         );
     }

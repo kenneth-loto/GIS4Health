@@ -34,4 +34,19 @@ class SuffixController extends Controller
         return ApiResponse::table($suffixes, SuffixResource::class);
     }
 
+    protected function baseQuery()
+    {
+        return Suffix::query();
+    }
+
+    protected function applySearchFilter($query, $search)
+    {
+        if (!$search)
+            return;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'ILIKE', "%{$search}%");
+        });
+    }
+
 }

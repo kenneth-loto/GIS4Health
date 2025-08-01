@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SeverityOptionResource;
-use App\Http\Resources\SeverityTableDataResource;
+use App\Http\Resources\SeverityResource;
 use App\Models\Severity;
 use Illuminate\Http\Request;
 
@@ -12,27 +12,37 @@ class SeverityController extends Controller
 {
     public function list()
     {
-        $severities = Severity::orderBy('name')->get();
-        return SeverityOptionResource::collection($severities); // or use resolve
+        return SeverityResource::collection(
+            Severity::orderBy('name')->get()
+        );
     }
 
-    // 🔹 Paginated, searchable list for index table
     public function index(Request $request)
     {
-        $query = Severity::query();
+        $query = $this->baseQuery();
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'ILIKE', "%{$search}%");
-            });
-        }
+        $this->applySearchFilter($query, $request->input('search'));
 
-        // Paginate and use resource collection
         $severities = $query->orderBy('name')
             ->paginate($request->input('per_page', 5))
             ->appends($request->only(['search', 'per_page']));
 
-        return SeverityTableDataResource::collection($severities);
+        return ApiResponse::table($severities, SeverityResource::class);
+
+    }
+
+    protected function baseQuery()
+    {
+        return Severity::query();
+    }
+
+    protected function applySearchFilter($query, $search)
+    {
+        if (!$search)
+            return;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'ILIKE', "%{$search}%");
+        });
     }
 }

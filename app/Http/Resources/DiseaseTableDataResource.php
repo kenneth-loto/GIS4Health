@@ -22,8 +22,6 @@ class DiseaseTableDataResource extends JsonResource
                 'id' => $this->category->id ?? null,
                 'name' => $this->category->name ?? null,
             ],
-            'created_at' => $this->created_at?->toDateTimeString(),
-            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }
