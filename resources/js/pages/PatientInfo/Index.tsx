@@ -32,16 +32,18 @@ export default function Index() {
         {
             label: 'Name',
             accessor: (row: PatientInfo) => {
-                const parts = [row.last_name, row.first_name, row.middle_name || '', row.suffix?.name || ''].filter(Boolean);
-                return parts.join(', ');
+                const name = [row.first_name, row.middle_name, row.suffix?.name].filter(Boolean).join(' ');
+                return [row.last_name, name].filter(Boolean).join(', ');
             },
+            subLabel: 'Lastname, Firstname Middlename Suffix',
         },
         {
             label: 'Address',
             accessor: (row: PatientInfo) => {
-                const parts = [row.street, row.barangay?.name, row.municipality?.name].filter(Boolean);
-                return parts.join(', ');
+                const beforeMunicipality = [row.street, row.barangay?.name].filter(Boolean).join(' ');
+                return [beforeMunicipality, row.municipality?.name].filter(Boolean).join(', ');
             },
+            subLabel: 'Street Barangay, Municipality',
         },
     ];
 

@@ -14,6 +14,7 @@ import { TablePagination } from './Table/TablePagination';
 interface Column<T> {
     label: string;
     accessor: string | ((row: T) => React.ReactNode);
+    subLabel?: string;
 }
 
 interface TableProps<T> {
@@ -199,7 +200,12 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                     <TableRow>
                         <TableHead>#</TableHead>
                         {columns.map((col, i) => (
-                            <TableHead key={`${col.label}-${i}`}>{col.label}</TableHead>
+                            <TableHead key={`${col.label}-${i}`}>
+                                <div className="flex flex-col">
+                                    <span className="font-medium">{col.label}</span>
+                                    {col.subLabel && <span className="text-[10px] text-muted-foreground italic">{col.subLabel}</span>}
+                                </div>
+                            </TableHead>
                         ))}
                         {(onEdit || onDelete) && <TableHead>Actions</TableHead>}
                     </TableRow>
