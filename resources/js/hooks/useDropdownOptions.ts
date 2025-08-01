@@ -7,54 +7,75 @@ import { usePatientInfosOptionList } from './usePatientInfo';
 import { useSeveritiesOptionList } from './useSeverity';
 import { useSuffixesOptionList } from './useSuffix';
 
-export function useDropdownOptions(form: UseFormReturn<any>) {
-    const { watch } = form;
+type DropdownKey = 'patient_infos' | 'categories' | 'municipalities' | 'severities' | 'suffixes' | 'diseases' | 'barangays' | 'barangayGeometry';
 
-    // Watch selected values from form to use in dependent dropdowns
-    const selectedMunicipalityId = watch('municipality_id');
+interface UseDropdownOptionsConfig {
+    include: DropdownKey[];
+}
+
+export function useDropdownOptions(form: UseFormReturn<any>, config: UseDropdownOptionsConfig) {
+    const { watch } = form;
     const selectedCategoryId = watch('category_id');
+    const selectedMunicipalityId = watch('municipality_id');
     const selectedBarangayId = watch('barangay_id');
 
-    // Fetch independent option lists
-    const { data: patient_infos, loading: loadingPatientInfos } = usePatientInfosOptionList();
-    const { data: categories, loading: loadingCategories } = useCategoriesOptionList();
-    const { data: municipalities, loading: loadingMunicipalities } = useMunicipalitiesOptionList();
-    const { data: severities, loading: loadingSeverities } = useSeveritiesOptionList();
-    const { data: suffixes, loading: loadingSuffixes } = useSuffixesOptionList();
-
-    // Fetch dependent option lists
-    const { data: diseases, loading: loadingDiseases } = useDiseasesByCategoryOptionList(selectedCategoryId);
-    const { data: barangays, loading: loadingBarangays } = useBarangaysByMunicipalityOptionList(selectedMunicipalityId);
-    const { geom: barangayGeometry, loading: loadingBarangayGeometry } = useBarangayFilteredGeom(selectedBarangayId);
-
-    return {
-        // Option lists for dropdowns
-        patient_infos,
-        categories,
-        municipalities,
-        severities,
-        diseases,
-        barangays,
-        suffixes,
-        barangayGeometry,
-
-        // Loading states for each dropdown
-        loading: {
-            patient_infos: loadingPatientInfos,
-            categories: loadingCategories,
-            municipalities: loadingMunicipalities,
-            severities: loadingSeverities,
-            diseases: loadingDiseases,
-            barangays: loadingBarangays,
-            suffixes: loadingSuffixes,
-            barangayGeometry: loadingBarangayGeometry,
-        },
-
-        // Currently selected values being watched
+    const result: any = {
+        loading: {},
         selected: {
             categoryId: selectedCategoryId,
             municipalityId: selectedMunicipalityId,
             barangayId: selectedBarangayId,
         },
     };
+
+    // Define hook handlers for each dropdown type
+    const hookHandlers: Record<DropdownKey, () => void> = {
+        patient_infos: () => {
+            const { data, loading } = usePatientInfosOptionList();
+            result.patient_infos = data;
+            result.loading.patient_infos = loading;
+        },
+        categories: () => {
+            const { data, loading } = useCategoriesOptionList();
+            result.categories = data;
+            result.loading.categories = loading;
+        },
+        municipalities: () => {
+            const { data, loading } = useMunicipalitiesOptionList();
+            result.municipalities = data;
+            result.loading.municipalities = loading;
+        },
+        severities: () => {
+            const { data, loading } = useSeveritiesOptionList();
+            result.severities = data;
+            result.loading.severities = loading;
+        },
+        suffixes: () => {
+            const { data, loading } = useSuffixesOptionList();
+            result.suffixes = data;
+            result.loading.suffixes = loading;
+        },
+        diseases: () => {
+            const { data, loading } = useDiseasesByCategoryOptionList(selectedCategoryId);
+            result.diseases = data;
+            result.loading.diseases = loading;
+        },
+        barangays: () => {
+            const { data, loading } = useBarangaysByMunicipalityOptionList(selectedMunicipalityId);
+            result.barangays = data;
+            result.loading.barangays = loading;
+        },
+        barangayGeometry: () => {
+            const { geom, loading } = useBarangayFilteredGeom(selectedBarangayId);
+            result.barangayGeometry = geom;
+            result.loading.barangayGeometry = loading;
+        },
+    };
+
+    // Execute required hooks
+    config.include.forEach((key) => {
+        if (hookHandlers[key]) hookHandlers[key]();
+    });
+
+    return result;
 }
