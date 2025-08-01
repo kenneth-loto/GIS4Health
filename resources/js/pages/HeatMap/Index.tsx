@@ -65,7 +65,9 @@ export default function Index() {
     const [loadingMap, setLoadingMap] = useState(false);
 
     // Filters
-    const { categories, municipalities, severities, diseases, barangays, loading, selected } = useDropdownOptions(form);
+    const { municipalities, barangays, categories, severities, diseases, loading, selected } = useDropdownOptions(form, {
+        include: ['municipalities', 'barangays', 'categories', 'severities', 'diseases'],
+    });
 
     // Handlers
     const onSubmit = async (data: FilterFormValues) => {

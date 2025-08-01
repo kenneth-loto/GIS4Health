@@ -54,7 +54,9 @@ export default function ChoroplethIndex() {
     } = form;
 
     // Filters
-    const { categories, diseases, loading, selected } = useDropdownOptions(form);
+    const { categories, diseases, loading, selected } = useDropdownOptions(form, {
+        include: ['categories', 'diseases'],
+    });
 
     const onSubmit = async (data: FilterFormValues) => {
         setLoadingMap(true);
