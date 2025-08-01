@@ -40,7 +40,7 @@ export default function DiseaseDialog({ open, onOpenChange, initialValue, isEdit
         },
     });
 
-    const { categories, loading, selected } = useDropdownOptions(form, {
+    const { categories, loading } = useDropdownOptions(form, {
         include: ['categories'],
     });
 
@@ -125,7 +125,7 @@ export default function DiseaseDialog({ open, onOpenChange, initialValue, isEdit
                                             onValueChange={field.onChange}
                                             items={categories}
                                             placeholder="Select a category"
-                                            loading={loading}
+                                            loading={loading.categories}
                                             getLabel={(p) => p.name}
                                             error={!!form.formState.errors.category_id}
                                         />

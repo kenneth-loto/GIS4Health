@@ -50,12 +50,7 @@ export default function CategoryDialog({ open, onOpenChange, initialValue, isEdi
     });
 
     return (
-        <Dialog
-            open={open}
-            onOpenChange={(nextOpen) => {
-                if (!isSubmitting) onOpenChange(nextOpen);
-            }}
-        >
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>{isEditing ? 'Edit Category' : 'Add Category'}</DialogTitle>
