@@ -6,6 +6,7 @@ type DialogState<T> = {
     mode: 'add' | 'edit' | null;
     data: T | null;
     isDeleting: boolean;
+    isSubmitting: boolean;
 };
 
 type Action<T> =
@@ -14,7 +15,8 @@ type Action<T> =
     | { type: 'CLOSE_FORM' }
     | { type: 'OPEN_DELETE'; payload: T }
     | { type: 'CLOSE_DELETE' }
-    | { type: 'SET_DELETING'; payload: boolean };
+    | { type: 'SET_DELETING'; payload: boolean }
+    | { type: 'SET_SUBMITTING'; payload: boolean };
 
 const initialState = <T>(): DialogState<T> => ({
     isOpen: false,
@@ -22,6 +24,7 @@ const initialState = <T>(): DialogState<T> => ({
     mode: null,
     data: null,
     isDeleting: false,
+    isSubmitting: false,
 });
 
 function reducer<T>(state: DialogState<T>, action: Action<T>): DialogState<T> {
@@ -31,13 +34,15 @@ function reducer<T>(state: DialogState<T>, action: Action<T>): DialogState<T> {
         case 'OPEN_EDIT':
             return { ...state, isOpen: true, mode: 'edit', data: action.payload };
         case 'CLOSE_FORM':
-            return { ...state, isOpen: false, mode: null, data: null };
+            return { ...state, isOpen: false, mode: null, data: null, isSubmitting: false };
         case 'OPEN_DELETE':
             return { ...state, isDeleteOpen: true, data: action.payload };
         case 'CLOSE_DELETE':
             return { ...state, isDeleteOpen: false, data: null, isDeleting: false };
         case 'SET_DELETING':
             return { ...state, isDeleting: action.payload };
+        case 'SET_SUBMITTING':
+            return { ...state, isSubmitting: action.payload };
         default:
             return state;
     }
@@ -54,5 +59,6 @@ export function useCrudDialog<T>() {
         openDelete: (item: T) => dispatch({ type: 'OPEN_DELETE', payload: item }),
         closeDelete: () => dispatch({ type: 'CLOSE_DELETE' }),
         setDeleting: (value: boolean) => dispatch({ type: 'SET_DELETING', payload: value }),
+        setSubmitting: (value: boolean) => dispatch({ type: 'SET_SUBMITTING', payload: value }),
     };
 }
