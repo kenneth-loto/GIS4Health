@@ -174,11 +174,10 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
             </div>
 
             {/* Filters */}
-            {filters.length > 0 && (
-                <div className="flex justify-end gap-4">
-                    {filters.map((filter) => (
+            <div className="grid w-full gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {filters.map((filter) => (
+                    <div key={filter.param} className="w-full">
                         <Filter
-                            key={filter.param}
                             filter={filter}
                             value={String(state.filters[filter.param] ?? 'all')}
                             onChange={(val) => {
@@ -190,9 +189,9 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                             }}
                             filters={state.filters}
                         />
-                    ))}
-                </div>
-            )}
+                    </div>
+                ))}
+            </div>
 
             {/* Table */}
             <Table>
