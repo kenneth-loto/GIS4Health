@@ -134,15 +134,15 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                 })}
                 {(onEdit || onDelete) && (
                     <TableCell>
-                        <div className="flex w-full flex-col gap-2 lg:flex-row">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                             {onEdit && (
-                                <Button variant="outline" className="w-full sm:w-auto" onClick={() => handleEdit(row)}>
+                                <Button variant="outline" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => handleEdit(row)}>
                                     <Edit className="mr-1 h-4 w-4" />
                                     Edit
                                 </Button>
                             )}
                             {onDelete && (
-                                <Button variant="destructive" className="w-full sm:w-auto" onClick={() => handleDelete(row)}>
+                                <Button variant="destructive" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => handleDelete(row)}>
                                     <Trash2 className="mr-1 h-4 w-4" />
                                     Delete
                                 </Button>
@@ -155,7 +155,7 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
     };
 
     return (
-        <div className="container mx-auto space-y-4 rounded-xl border p-4">
+        <div className="w-full max-w-full space-y-4 rounded-xl border p-4">
             {/* Header Controls */}
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <PerPage
