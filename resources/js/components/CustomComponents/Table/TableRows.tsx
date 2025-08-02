@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { Edit, Trash2 } from 'lucide-react';
+import { AlertTriangle, Edit, Trash2 } from 'lucide-react';
 
 interface Column<T> {
     label: string;
@@ -65,11 +65,17 @@ export function TableRows<T extends { id: string | number }>({
     if (error) {
         return (
             <TableRow>
-                <TableCell colSpan={columns.length + 2} className="py-10 text-center">
-                    <p className="text-red-500">Error loading data.</p>
-                    <Button onClick={reload} className="mt-2">
-                        Retry
-                    </Button>
+                <TableCell colSpan={columns.length + 2}>
+                    <div className="flex flex-col items-center justify-center space-y-4 px-4 py-12 text-center">
+                        <div className="flex items-center gap-2 text-destructive">
+                            <AlertTriangle className="h-4 w-4 animate-pulse" />
+                            <span className="text-sm font-medium sm:text-base">Failed to load data</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">Please check your connection or try again later.</p>
+                        <Button onClick={reload} variant="outline" className="w-full max-w-[200px] sm:w-auto">
+                            Retry
+                        </Button>
+                    </div>
                 </TableCell>
             </TableRow>
         );
