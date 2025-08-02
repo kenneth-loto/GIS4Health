@@ -1,11 +1,15 @@
+import { Edit, Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 import { useDebounce } from '@/hooks/useDebounce';
 import { useTableReducer } from '@/hooks/useTableReducer';
+
 import { FilterConfig } from '@/types';
-import { Edit, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
+
 import Filter from './Table/Filter';
 import { PerPage } from './Table/PerPage';
 import { Search } from './Table/Search';
@@ -34,11 +38,13 @@ function getNestedValue(obj: any, accessor: string): any {
 }
 
 export function CustomTable<T extends { id: number | string }>({ columns, fetchFn, filters = [], onEdit, onDelete }: TableProps<T>) {
+    // Hooks
     const [state, dispatch] = useTableReducer<T>();
     const debouncedSearch = useDebounce(state.search);
 
     const totalPages = state.perPage > 0 && Number.isFinite(state.total) ? Math.max(Math.ceil(state.total / state.perPage), 1) : 1;
 
+    // Data Fetching
     const loadData = () => {
         dispatch({ type: 'SET_LOADING', payload: true });
         dispatch({ type: 'SET_ERROR', payload: false });
@@ -67,14 +73,13 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
         loadData();
     }, [debouncedSearch, state.page, state.perPage, JSON.stringify(state.filters)]);
 
-    const handleEdit = (row: T) => onEdit?.(row);
-    const handleDelete = (row: T) => onDelete?.(row);
-
+    // Cell Rendering
     const renderCellValue = (row: T, accessor: Column<T>['accessor']) => {
         if (typeof accessor === 'function') return accessor(row);
         return getNestedValue(row, accessor);
     };
 
+    // Row Rendering
     const renderTableRows = () => {
         if (state.loading) {
             return Array.from({ length: state.perPage }).map((_, i) => (
@@ -126,7 +131,7 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                     const value = renderCellValue(row, col.accessor);
                     return (
                         <TableCell key={`${col.label}-${index}`}>
-                            <span className={(value == null ? 'text-gray-400 italic' : '') + ' block break-words whitespace-normal'}>
+                            <span className={`block break-words whitespace-normal ${value == null ? 'text-gray-400 italic' : ''}`}>
                                 {value ?? 'N/A'}
                             </span>
                         </TableCell>
@@ -136,13 +141,13 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
                     <TableCell>
                         <div className="flex flex-col gap-2 sm:flex-row">
                             {onEdit && (
-                                <Button variant="outline" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => handleEdit(row)}>
+                                <Button variant="outline" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => onEdit(row)}>
                                     <Edit className="mr-1 h-4 w-4" />
                                     Edit
                                 </Button>
                             )}
                             {onDelete && (
-                                <Button variant="destructive" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => handleDelete(row)}>
+                                <Button variant="destructive" className="w-full sm:w-auto sm:min-w-[80px]" onClick={() => onDelete(row)}>
                                     <Trash2 className="mr-1 h-4 w-4" />
                                     Delete
                                 </Button>
@@ -154,9 +159,10 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
         ));
     };
 
+    // Render
     return (
         <div className="w-full max-w-full space-y-4 rounded-xl border p-4">
-            {/* Header Controls */}
+            {/* Controls */}
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <PerPage
                     value={state.perPage}
