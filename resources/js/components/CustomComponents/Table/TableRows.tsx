@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { AlertTriangle, Edit, Trash2 } from 'lucide-react';
+import { AlertTriangle, Edit, Search, Trash2 } from 'lucide-react';
 
 interface Column<T> {
     label: string;
@@ -84,8 +84,14 @@ export function TableRows<T extends { id: string | number }>({
     if (data.length === 0) {
         return (
             <TableRow>
-                <TableCell colSpan={columns.length + 2} className="py-10 text-center">
-                    No records found.
+                <TableCell colSpan={columns.length + 2}>
+                    <div className="flex flex-col items-center justify-center space-y-4 px-4 py-12 text-center">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Search className="h-4 w-4" />
+                            <span className="text-sm font-medium sm:text-base">No results found</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">Try modifying your search or filters.</p>
+                    </div>
                 </TableCell>
             </TableRow>
         );
