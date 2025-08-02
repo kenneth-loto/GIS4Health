@@ -175,7 +175,7 @@ export function CustomTable<T extends { id: number | string }>({ columns, fetchF
             </div>
 
             {/* Filters */}
-            <div className="grid w-full gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid w-full gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
                 {filters.map((filter) => (
                     <div key={filter.param} className="w-full">
                         <Filter
