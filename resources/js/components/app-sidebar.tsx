@@ -13,6 +13,7 @@ import {
     Droplets,
     Earth,
     FileStack,
+    Home,
     LayoutGrid,
     Map,
     OctagonAlert,
@@ -74,6 +75,11 @@ const mainNavItems: NavItem[] = [
         icon: Cog,
         isActive: true,
         items: [
+            {
+                title: 'Barangays',
+                href: '/barangays',
+                icon: Home,
+            },
             {
                 title: 'Categories',
                 href: '/categories',

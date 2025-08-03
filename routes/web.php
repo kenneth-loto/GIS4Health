@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChoroplethController;
 use App\Http\Controllers\DiseaseController;
@@ -21,6 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::get('barangays', [BarangayController::class, 'index']);
 
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
 

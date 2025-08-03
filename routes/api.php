@@ -39,6 +39,8 @@ Route::get('/municipalities', [MunicipalityController::class, 'index']);
 Route::get('/barangays/by-municipality/{municipality}', [BarangayController::class, 'byMunicipality']);
 Route::get('/barangays/barangay-geometries/{barangayId}', [BarangayController::class, 'barangayGeom']);
 
+Route::get('/barangays', [BarangayController::class, 'index']);
+
 // Patient Info Route
 Route::get('/patient_infos', [PatientInfoController::class, 'index']);
 Route::get('/patient_infos/list', [PatientInfoController::class, 'list']);
