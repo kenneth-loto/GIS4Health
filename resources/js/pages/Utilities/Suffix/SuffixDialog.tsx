@@ -71,7 +71,7 @@ export default function SuffixDialog({ open, onOpenChange, initialValue, isEditi
                         />
 
                         <DialogFooter>
-                            <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
+                            <DialogActionButtons isSubmitting={isSubmitting} />
                         </DialogFooter>
                     </form>
                 </Form>

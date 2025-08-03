@@ -99,7 +99,7 @@ export default function CategoryDialog({ open, onOpenChange, initialValue, isEdi
                         />
 
                         <DialogFooter>
-                            <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
+                            <DialogActionButtons isSubmitting={isSubmitting} />
                         </DialogFooter>
                     </form>
                 </Form>

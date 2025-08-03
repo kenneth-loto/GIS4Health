@@ -136,7 +136,7 @@ export default function DiseaseDialog({ open, onOpenChange, initialValue, isEdit
                         />
 
                         <DialogFooter>
-                            <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
+                            <DialogActionButtons isSubmitting={isSubmitting} />
                         </DialogFooter>
                     </form>
                 </Form>

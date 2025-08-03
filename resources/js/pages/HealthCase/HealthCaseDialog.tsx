@@ -164,7 +164,7 @@ export default function HealthCaseDialog({ open, onOpenChange, initialValue, isE
                         />
 
                         <DialogFooter>
-                            <DialogActionButtons isSubmitting={form.formState.isSubmitting} />
+                            <DialogActionButtons isSubmitting={isSubmitting} />
                         </DialogFooter>
                     </form>
                 </Form>
