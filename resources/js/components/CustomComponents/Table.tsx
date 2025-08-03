@@ -7,10 +7,10 @@ import { useTableReducer } from '@/hooks/useTableReducer';
 import { FilterConfig } from '@/types';
 
 import Filter from '@/components/CustomComponents/Table/Filter';
-import { PerPage } from '@/components/CustomComponents/Table/PerPage';
 import { Search } from '@/components/CustomComponents/Table/Search';
-import { TablePagination } from '@/components/CustomComponents/Table/TablePagination';
 import { TableRows } from '@/components/CustomComponents/Table/TableRows';
+import { RowsSelected } from './Table/RowSelected';
+import { PerPagePagination } from './Table/PerPagePagination';
 
 interface Column<T> {
     label: string;
@@ -67,14 +67,7 @@ export function CustomTable<T extends { id: string | number }>({ columns, fetchF
     return (
         <div className="w-full max-w-full space-y-4 rounded-xl border p-4">
             {/* Controls */}
-            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                <PerPage
-                    value={state.perPage}
-                    onChange={(val) => {
-                        dispatch({ type: 'SET_PER_PAGE', payload: val });
-                        dispatch({ type: 'SET_PAGE', payload: 1 });
-                    }}
-                />
+            <div className="flex flex-col items-start">
                 <Search
                     value={state.search}
                     onChange={(val) => {
@@ -133,7 +126,13 @@ export function CustomTable<T extends { id: string | number }>({ columns, fetchF
             </Table>
 
             {/* Pagination */}
-            <TablePagination page={state.page} total={state.total} totalPages={totalPages} dispatch={dispatch} />
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-2 md:gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+                {/* Left: Rows selected */}
+                <RowsSelected total={state.total} />
+
+                {/* Right: Combined per page + rows */}
+                <PerPagePagination page={state.page} total={state.total} totalPages={totalPages} perPage={state.perPage} dispatch={dispatch} />
+            </div>
         </div>
     );
 }
