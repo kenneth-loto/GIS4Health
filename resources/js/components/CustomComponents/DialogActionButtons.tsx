@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@/components/ui/dialog';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 
 type Props = {
     isSubmitting: boolean;
@@ -13,13 +13,22 @@ export default function DialogActionButtons({ isSubmitting, submitLabel = 'Save'
         <div className="mt-4 flex items-center justify-end gap-2">
             <DialogClose asChild>
                 <Button type="button" variant="outline">
-                    <XCircle />
+                    <XCircle className="h-4 w-4" />
                     {cancelLabel}
                 </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-                <CheckCircle />
-                {submitLabel}
+                {isSubmitting ? (
+                    <>
+                        <Loader2 className="animate-spin" />
+                        Saving...
+                    </>
+                ) : (
+                    <>
+                        <CheckCircle className="h-4 w-4" />
+                        {submitLabel}
+                    </>
+                )}
             </Button>
         </div>
     );
