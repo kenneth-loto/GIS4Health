@@ -2,6 +2,8 @@
 
 A geospatial health monitoring system for Biliran Province, Philippines. Built with Laravel, React (TypeScript), and MapLibre GL JS — visualizes disease case data as interactive heatmaps and 3D choropleth maps with smart filtering and an embedded AI assistant.
 
+![Preview](public/project-preview.png)
+
 > Rebuilt and expanded version of the original [Heat Mapping of Various Health Cases in Biliran Province](https://github.com/kenneth-loto/heat-mapping-of-various-health-cases-in-biliran-province) project.
 
 ## Features
