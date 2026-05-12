@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,9 +8,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import DialogActionButtons from '@/components/CustomComponents/DialogActionButtons';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { usePatientInfoLogic } from '@/hooks/use-patient-info-logic';
+import { useDropdownOptions } from '@/hooks/useDropdownOptions';
+import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { PatientInfo } from '@/types';
-import { setServerErrors } from '@/utils/set-server-errors';
+import { FormDialogProps } from '@/types/dialog-props';
 import MapComponent from './Map';
 
 const patientInfoSchema = z.object({
@@ -28,15 +28,11 @@ const patientInfoSchema = z.object({
 
 type PatientInfoFormValues = z.infer<typeof patientInfoSchema>;
 
-type Props = {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    patient_info: PatientInfo | null;
-    isEditing: boolean;
-    modal: boolean;
-};
+type Props = FormDialogProps<PatientInfo>;
 
-export default function PatientInfoDialog({ open, onOpenChange, patient_info, isEditing, modal = true }: Props) {
+export default function PatientInfoDialog({ open, onOpenChange, initialValue, isEditing, isSubmitting, setSubmitting, modal = true }: Props) {
+    if (!open) return null;
+
     const form = useForm<PatientInfoFormValues>({
         resolver: zodResolver(patientInfoSchema),
         defaultValues: {
@@ -52,52 +48,35 @@ export default function PatientInfoDialog({ open, onOpenChange, patient_info, is
         },
     });
 
-    const {
-        suffixes,
-        loading,
-        municipalities,
-        loadingMunicipalities,
-        barangays,
-        loadingBarangays,
-        barangayGeometry,
-        loadingBarangayGeometry,
-        isBarangayDisabled,
-        mapResetKey,
-    } = usePatientInfoLogic(form, open);
+    const { municipalities, barangays, suffixes, barangayGeometry, loading, selected } = useDropdownOptions(form, {
+        include: ['municipalities', 'barangays', 'suffixes', 'barangayGeometry'],
+    });
 
     useEffect(() => {
         if (open) {
             form.reset({
-                first_name: patient_info?.first_name || '',
-                middle_name: patient_info?.middle_name || '',
-                last_name: patient_info?.last_name || '',
-                suffix_id: patient_info?.suffix?.id || '',
-                municipality_id: patient_info?.municipality?.id || '',
-                barangay_id: patient_info?.barangay?.id || '',
-                street: patient_info?.street || '',
-                latitude: patient_info?.latitude || '',
-                longitude: patient_info?.longitude || '',
+                first_name: initialValue?.first_name || '',
+                middle_name: initialValue?.middle_name || '',
+                last_name: initialValue?.last_name || '',
+                suffix_id: initialValue?.suffix?.id || '',
+                municipality_id: initialValue?.municipality?.id || '',
+                barangay_id: initialValue?.barangay?.id || '',
+                street: initialValue?.street || '',
+                latitude: initialValue?.latitude || '',
+                longitude: initialValue?.longitude || '',
             });
             form.clearErrors();
         }
-    }, [open, patient_info]);
+    }, [open, initialValue]);
 
-    const onSubmit = (values: PatientInfoFormValues) => {
-        const onSuccess = () => {
-            onOpenChange(false);
-            form.reset();
-        };
-
-        const onError = (errors: Record<string, string>) => {
-            setServerErrors(form, errors);
-        };
-
-        if (isEditing && patient_info) {
-            router.put(`/patient_infos/${patient_info.id}`, values, { onSuccess, onError });
-        } else {
-            router.post('/patient_infos', values, { onSuccess, onError });
-        }
-    };
+    const onSubmit = useFormSubmit<PatientInfoFormValues>({
+        form,
+        data: initialValue,
+        isEditing,
+        routePrefix: 'patient_infos',
+        setSubmitting,
+        onClose: () => onOpenChange(false),
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal={modal}>
@@ -167,7 +146,7 @@ export default function PatientInfoDialog({ open, onOpenChange, patient_info, is
                                                 onValueChange={field.onChange}
                                                 items={suffixes}
                                                 placeholder="Select a suffix"
-                                                loading={loading}
+                                                loading={loading.suffixes}
                                                 getLabel={(p) => p.name}
                                                 error={!!form.formState.errors.suffix_id}
                                             />
@@ -192,7 +171,7 @@ export default function PatientInfoDialog({ open, onOpenChange, patient_info, is
                                                 onValueChange={field.onChange}
                                                 items={municipalities}
                                                 placeholder="Select a municipality"
-                                                loading={loadingMunicipalities}
+                                                loading={loading.municipalities}
                                                 getLabel={(p) => p.name}
                                                 error={!!form.formState.errors.municipality_id}
                                             />
@@ -214,10 +193,10 @@ export default function PatientInfoDialog({ open, onOpenChange, patient_info, is
                                                 onValueChange={field.onChange}
                                                 items={barangays}
                                                 placeholder="Select a barangay"
-                                                loading={loadingBarangays}
+                                                loading={loading.barangays}
                                                 getLabel={(p) => p.name}
                                                 error={!!form.formState.errors.barangay_id}
-                                                disabled={isBarangayDisabled}
+                                                disabled={!selected.municipalityId}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -274,14 +253,13 @@ export default function PatientInfoDialog({ open, onOpenChange, patient_info, is
                             <FormLabel>Location Map</FormLabel>
                             <MapComponent
                                 geom={barangayGeometry}
-                                loadingGeometry={loadingBarangayGeometry}
-                                resetMap={mapResetKey}
+                                loadingGeometry={loading.barangayGeometry}
                                 onSelectCoordinates={(lat, lng) => {
                                     form.setValue('latitude', lat.toFixed(6));
                                     form.setValue('longitude', lng.toFixed(6));
                                 }}
-                                initialLatitude={patient_info ? parseFloat(patient_info.latitude) : undefined}
-                                initialLongitude={patient_info ? parseFloat(patient_info.longitude) : undefined}
+                                initialLatitude={initialValue ? parseFloat(initialValue.latitude) : undefined}
+                                initialLongitude={initialValue ? parseFloat(initialValue.longitude) : undefined}
                             />
                         </div>
 

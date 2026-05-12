@@ -27,8 +27,9 @@ export default function Dashboard() {
                         <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     </div>
                 </div>
-
-                <RecentActivity />
+                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                    <RecentActivity />
+                </div>
             </div>
         </AppLayout>
     );
